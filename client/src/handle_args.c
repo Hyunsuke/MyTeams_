@@ -20,12 +20,12 @@ int error_handling(int ac, char **av)
 {
     if (ac == 3) {
         if (isvalidport(av) == 84) {
-            fprintf(stderr, "Error : Bad Port\n");
+            printf("Error : Bad Port\n");
             return 84;
         }
         return 0;
     } else {
-        fprintf(stderr, "USAGE : ./myteams_cli <ip> <port>\n");
+        printf("USAGE : ./myteams_cli <ip> <port>\n");
         return 84;
     }
     return 0;
