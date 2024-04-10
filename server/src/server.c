@@ -9,5 +9,6 @@
 
 void run_serv(server_t *s)
 {
+    init_list(s);
     config(s);
 }
