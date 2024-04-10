@@ -15,7 +15,7 @@ OBJ	=	$(SRC:.c=.o)
 
 CFLAGS	=	-I include/ -W -Wall -Wextra -g
 
-NAME	=	myteams_cli
+NAME	=	../myteams_cli
 
 all: $(NAME)
 
