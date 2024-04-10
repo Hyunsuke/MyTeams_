@@ -17,6 +17,9 @@ OBJ	=	$(SRC:.c=.o)
 
 CFLAGS	=	-I include/ -W -Wall -Wextra -g
 
+LDFLAGS += -L../libs/myteams
+LDLIBS += -lmyteams
+
 NAME	=	../myteams_server
 
 all: $(NAME)
