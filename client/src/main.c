@@ -13,7 +13,8 @@ int main(int ac, char **av)
         printhelp();
         return 0;
     }
-    if (error_handling(ac, av) == 84)
+    if (error_handling(ac, av) == 84 ||
+        create_client(av[1], atoi(av[2])) == 84)
         return 84;
     return 0;
 }

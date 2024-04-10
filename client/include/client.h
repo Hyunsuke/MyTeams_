@@ -13,8 +13,11 @@
     #include <string.h>
     #include <unistd.h>
     #include <ctype.h>
+    #include <arpa/inet.h>
+
 
 void printhelp(void);
 int error_handling(int ac, char **av);
+int create_client(char *serv_ip, int serv_port);
 
 #endif /* !CLIENT_H_ */
