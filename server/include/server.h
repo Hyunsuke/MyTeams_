@@ -51,9 +51,13 @@ int find_client(client_t **head, int fd);
 void init_list(server_t *s);
 void init_server(server_t *s);
 
-//connection.c
+// connection.c
 void handle_incoming_connection(server_t *s);
 void monitor_select_activity(server_t *s, fd_set *client_fds, int max_fd);
 int handle_new_connection(server_t *s, fd_set *client_fds, int *max_fd);
+
+// utils.c
+char **my_str_to_word_array(char const *str, char separator);
+int number_back(char const *str, char separator);
 
 #endif /* !SERVER_H_ */

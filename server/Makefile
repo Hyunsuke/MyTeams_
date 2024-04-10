@@ -15,6 +15,7 @@ SRC	=	src/main.c 				\
 		src/gestion_client_list.c \
 		src/list.c \
 		src/connection.c \
+		src/utils.c \
 
 OBJ	=	$(SRC:.c=.o)
 

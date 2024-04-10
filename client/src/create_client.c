@@ -20,13 +20,14 @@ int create_socket(void)
 
 int client_loop(int sockfd)
 {
-    char buffer[1024];
-    ssize_t num_bytes = recv(sockfd, buffer, sizeof(buffer), MSG_PEEK);
+    char *input_str = NULL;
+    size_t size = 0;
 
-    if (num_bytes == 0) {
-        printf("server closed\n");
+    if (getline(&input_str, &size, stdin) == -1) {
         return 1;
     }
+    input_str[strlen(input_str) - 1] = '\n';
+    send(sockfd, input_str, size, 0);
     return 0;
 }
 

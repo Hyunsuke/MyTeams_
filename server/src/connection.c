@@ -28,12 +28,13 @@ int handle_new_connection(server_t *s, fd_set *client_fds, int *max_fd)
 void client_is_connected(server_t *s, int client_fd)
 {
     char buffer[1024];
-    int bytes_received;
+    int bytes_received = 0;
 
-    bytes_received = read(client_fd, buffer, sizeof(buffer) - 1);
+    bytes_received = recv(client_fd, buffer, sizeof(buffer), 0);
     if (bytes_received <= 0)
             return;
     buffer[bytes_received] = '\0';
+    write(1, buffer, strlen(buffer));
     // s->input_tab = my_str_to_word_array(buffer, ' ');
     // handle_commands(s, client_fd);
 }
@@ -46,7 +47,7 @@ void monitor_select_activity(server_t *s, fd_set *client_fds, int max_fd)
     read_fds = *client_fds;
     for (client_fd = 0; client_fd <= max_fd; client_fd++) {
         if (FD_ISSET(client_fd, &read_fds)) {
-                client_is_connected(s, client_fd);
+            client_is_connected(s, client_fd);
         }
     }
 }
