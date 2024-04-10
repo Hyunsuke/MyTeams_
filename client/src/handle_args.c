@@ -7,7 +7,8 @@
 
 #include "client.h"
 
-bool is_port_number_real(int port) {
+bool is_port_number_real(int port)
+{
     return (port >= 1 && port <= 65535);
 }
 
