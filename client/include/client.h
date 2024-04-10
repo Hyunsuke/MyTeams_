@@ -15,6 +15,7 @@
     #include <unistd.h>
     #include <ctype.h>
     #include <arpa/inet.h>
+    #include <stdbool.h>
 
 
 void printhelp(void);

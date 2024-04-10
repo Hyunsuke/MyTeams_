@@ -7,12 +7,18 @@
 
 #include "client.h"
 
+bool is_port_number_real(int port) {
+    return (port >= 1 && port <= 65535);
+}
+
 int isvalidport(char **av)
 {
     for (int i = 0; av[2][i] != '\0'; i++) {
         if (!isdigit(av[2][i]))
             return 84;
     }
+    if (!is_port_number_real(atoi(av[2])))
+        return 84;
     return 0;
 }
 
