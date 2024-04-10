@@ -7,6 +7,11 @@
 
 #include "server.h"
 
+void init_server(server_t *s)
+{
+    s->exitProgram = false;
+}
+
 void init_list(server_t *s)
 {
     s->clients = NULL;

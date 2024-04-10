@@ -14,7 +14,7 @@ client_t *create_client(int fd)
     if (new_client != NULL) {
         uuid_generate(new_client->uuid);
         new_client->fd = fd;
-        strcpy(new_client->name, "Not Defined");
+        new_client->name = NULL;
         new_client->log = false;
         new_client->next = NULL;
     }
@@ -84,6 +84,7 @@ void remove_client(client_t **head, int fd)
     if (temp == NULL) {
         return;
     }
+    close(temp->fd);
     if (prev == NULL) {
         *head = temp->next;
     } else {
