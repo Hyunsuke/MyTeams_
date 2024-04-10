@@ -45,7 +45,7 @@ void monitor_select_activity(server_t *s, fd_set *client_fds, int max_fd)
     read_fds = *client_fds;
     for (client_fd = 0; client_fd <= max_fd; client_fd++) {
         if (FD_ISSET(client_fd, &read_fds)) {
-                client_is_connected(server, client_fd);
+                client_is_connected(s, client_fd);
         }
     }
 }
@@ -64,9 +64,9 @@ void handle_incoming_connection(server_t *s)
             exit(EXIT_FAILURE);
         }
         if (FD_ISSET(s->socket_fd, &read_fds)) {
-            handle_new_connection(server, &s->client_fds, &max_fd);
+            handle_new_connection(s, &s->client_fds, &max_fd);
         }
-        monitor_select_activity(server, &read_fds, max_fd);
+        monitor_select_activity(s, &read_fds, max_fd);
     }
     close(s->socket_fd);
 }
