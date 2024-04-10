@@ -10,6 +10,7 @@ CC	= gcc
 SRC	=	src/main.c 				\
 		src/help.c 				\
 		src/handle_args.c 		\
+		src/create_client.c 	\
 
 OBJ	=	$(SRC:.c=.o)
 
