@@ -23,7 +23,7 @@ void config_server_socket(server_t *s)
     }
     s->serv_adr.sin_family = AF_INET;
     s->serv_adr.sin_addr.s_addr = INADDR_ANY;
-    s->serv_adr.sin_port = htons(atoi(s->port));
+    s->serv_adr.sin_port = htons(s->port);
 }
 
 void config(server_t *s)
