@@ -7,6 +7,7 @@
 
 #ifndef CLIENT_H_
     #define CLIENT_H_
+    #define BUFFER_SIZE 1024
 
     #include <stdio.h>
     #include <stdlib.h>
