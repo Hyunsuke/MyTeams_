@@ -12,10 +12,12 @@ SRC	=	src/main.c 				\
 		src/handle_args.c 		\
 		src/server.c			\
 		src/config.c 			\
+		src/gestion_client_list.c \
+		src/list.c \
 
 OBJ	=	$(SRC:.c=.o)
 
-CFLAGS	=	-I include/ -W -Wall -Wextra -g
+CFLAGS	=	-I include/ -W -Wall -Wextra -g -luuid
 
 LDFLAGS += -L../libs/myteams
 LDLIBS += -lmyteams
