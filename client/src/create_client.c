@@ -18,7 +18,19 @@ int create_socket(void)
     return sockfd;
 }
 
-int create_client(char *serv_ip, int serv_port)
+int client_loop(int sockfd)
+{
+    char buffer[1024];
+    ssize_t num_bytes = recv(sockfd, buffer, sizeof(buffer), MSG_PEEK);
+
+    if (num_bytes == 0) {
+        printf("server closed\n");
+        return 1;
+    }
+    return 0;
+}
+
+int connect_to_server(char *serv_ip, int serv_port)
 {
     int sockfd = create_socket();
     struct sockaddr_in server_addr;
@@ -29,13 +41,27 @@ int create_client(char *serv_ip, int serv_port)
     if (inet_pton(AF_INET, serv_ip, &server_addr.sin_addr) <= 0) {
         printf("can't set the server info\n");
         close(sockfd);
-        return 84;
+        return -1;
     }
     if (connect(sockfd, (struct sockaddr *)&server_addr,
         sizeof(server_addr)) == -1) {
         printf("can't connect to the server\n");
         close(sockfd);
+        return -1;
+    }
+    return sockfd;
+}
+
+int create_client(char *serv_ip, int serv_port)
+{
+    int sockfd = connect_to_server(serv_ip, serv_port);
+
+    if (sockfd == -1) {
         return 84;
+    }
+    while (1) {
+        if (client_loop(sockfd))
+            break;
     }
     close(sockfd);
     return 0;
