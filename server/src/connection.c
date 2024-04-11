@@ -35,8 +35,8 @@ void client_is_connected(server_t *s, int client_fd)
             return;
     buffer[bytes_received] = '\0';
     write(1, buffer, strlen(buffer));
-    // s->input_tab = my_str_to_word_array(buffer, ' ');
-    // handle_commands(s, client_fd);
+    s->input_tab = my_str_to_word_array(buffer, ' ');
+    handle_commands(s, client_fd);
 }
 
 void monitor_select_activity(server_t *s, fd_set *client_fds, int max_fd)

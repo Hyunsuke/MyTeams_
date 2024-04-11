@@ -38,6 +38,7 @@ typedef struct server_s {
     bool exitProgram;
     fd_set client_fds;
     client_t *clients;
+    char **input_tab;
 } server_t;
 
 void printhelp(void);
@@ -59,5 +60,15 @@ int handle_new_connection(server_t *s, fd_set *client_fds, int *max_fd);
 // utils.c
 char **my_str_to_word_array(char const *str, char separator);
 int number_back(char const *str, char separator);
+
+// handle_commands.c
+void handle_commands(server_t *s, int client_fd);
+void handle_login(server_t *s, int client_fd);
+void handle_command2(server_t *s, int client_fd);
+
+typedef struct {
+    const char *command;
+    void (*handler)(server_t *, int);
+} command_handler_t;
 
 #endif /* !SERVER_H_ */
