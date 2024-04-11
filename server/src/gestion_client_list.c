@@ -69,7 +69,7 @@ int find_client(client_t **head, int fd)
     return -1;
 }
 
-void remove_client(client_t **head, int fd)
+void remove_client(client_t **head, int fd, fd_set *client_fds)
 {
     client_t *temp = *head;
     client_t *prev = NULL;
@@ -85,6 +85,7 @@ void remove_client(client_t **head, int fd)
         return;
     }
     close(temp->fd);
+    FD_CLR(temp->fd, client_fds);
     if (prev == NULL) {
         *head = temp->next;
     } else {

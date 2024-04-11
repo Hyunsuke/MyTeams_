@@ -46,6 +46,7 @@ void run_serv(server_t *s);
 void config(server_t *s);
 void add_client(client_t **head, int fd);
 int find_client(client_t **head, int fd);
+void remove_client(client_t **head, int fd, fd_set *clients_fd);
 
 // list.c
 void init_list(server_t *s);
