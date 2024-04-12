@@ -14,8 +14,8 @@ client_t *create_client(int fd)
     if (new_client != NULL) {
         uuid_generate(new_client->uuid);
         new_client->fd = fd;
+        printf("In create client, fd & client->fd : %d && %d\n", fd, new_client->fd);
         new_client->name = NULL;
-        new_client->log = false;
         new_client->next = NULL;
     }
     return new_client;
@@ -34,7 +34,11 @@ void add_client(client_t **head, int fd)
         *head = new_client;
     } else {
         current = *head;
-        while (current->next != NULL) {
+        if (current->next == NULL) {
+            current->next = new_client;
+            return;
+        }
+        for (int i = 0; current->next != NULL; i++) {
             current = current->next;
         }
         current->next = new_client;
@@ -45,12 +49,23 @@ int search_fd(client_t *current, int fd)
 {
     int indice = 0;
 
+    if (current->next == NULL) {
+        printf("fd: %d and current fd: %d\n", fd, current->fd);
+        if (current->fd == fd) {
+            return indice;
+        }
+    }
     while (current->next != NULL) {
         if (current->fd == fd) {
             return indice;
         }
+        printf("fd: %d and current fd: %d\n", fd, current->fd);
         indice++;
         current = current->next;
+    }
+    if (current->fd == fd) {
+        printf("fd: %d and current fd: %d\n", fd, current->fd);
+        return indice;
     }
     printf("Client not found\n");
     return -1;

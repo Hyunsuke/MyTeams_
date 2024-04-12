@@ -4,9 +4,27 @@
 ** File description:
 ** strnonalphanumerics
 */
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "server.h"
+
+bool check_quotes(const char *str)
+{
+    // à modifier en fonction de '\r\n' ou '\n' ou '\0'
+    if (str[0] == '"' && str[strlen(str) - 3] == '"')
+        return true;
+    else
+        return false;
+}
+
+char *remove_quotes(const char *str)
+{
+    int length = strlen(str);
+    char *new_str = malloc(length - 1);
+
+    strncpy(new_str, str + 1, length - 2);
+    // à modifier en fonction de '\r\n' ou '\n' ou '\0'
+    new_str[length - 4] = '\0';
+    return new_str;
+}
 
 int number_back(char const *str, char separator)
 {

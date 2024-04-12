@@ -13,10 +13,12 @@ SRC	=	src/main.c 				\
 		src/server.c			\
 		src/config.c 			\
 		src/gestion_client_list.c \
+		src/gestion_user_list.c \
 		src/list.c \
 		src/connection.c \
 		src/utils.c \
 		src/handle_commands.c 	\
+		src/cmd/cmd_login.c \
 
 OBJ	=	$(SRC:.c=.o)
 
