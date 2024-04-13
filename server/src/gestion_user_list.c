@@ -77,8 +77,10 @@ void update_user(user_t **head, client_t **head_client, int client_fd, char *nam
         user_t *new_current = *head;
         char uuid_str[37];
         uuid_unparse(new_current->uuid, uuid_str);
-        write(client_fd, uuid_str, strlen(uuid_str));
-        // client_event_logged_in(uuid_str, current->name);
-        // server_event_user_created(uuid_str, current->name);
+        // Send la ligne juste en dessous 
+        client_event_logged_in(uuid_str, new_current->name);
+        //
+        server_event_user_created(uuid_str, new_current->name);
+        server_event_user_logged_in(uuid_str);
     }
 }

@@ -32,7 +32,6 @@ client_t *create_client(int fd)
     if (new_client != NULL) {
         new_client->fd = fd;
         new_client->log = false;
-        printf("In create client, fd & client->fd : %d && %d\n", fd, new_client->fd);
         new_client->name = NULL;
         new_client->next = NULL;
     }

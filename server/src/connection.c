@@ -21,9 +21,7 @@ int handle_new_connection(server_t *s, fd_set *client_fds, int *max_fd)
     FD_SET(new_client, client_fds);
     if (new_client > *max_fd)
         *max_fd = new_client;
-    write(1, "ITERATION..", 11);
     add_client(&(s->clients), new_client);
-    display_clients(s);
 
     return 0;
 }
@@ -37,7 +35,6 @@ void client_is_connected(server_t *s, int client_fd)
     if (bytes_received <= 0)
             return;
     buffer[bytes_received] = '\0';
-    write(1, buffer, strlen(buffer));
     s->input_tab = my_str_to_word_array(buffer, ' ');
     handle_commands(s, client_fd);
 }
