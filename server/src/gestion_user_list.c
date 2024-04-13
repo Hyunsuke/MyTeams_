@@ -58,9 +58,7 @@ void add_user(user_t **head, char *name)
 void update_user(user_t **head, client_t **head_client, int client_fd, char *name)
 {
     user_t *current = *head;
-    char *uuid_print = NULL;
-    
-    uuid_unparse(current->uuid, uuid_print);
+
     while (current != NULL) {
         if (strcmp(current->name, name) == 0) {
             if (current->log) {
@@ -68,17 +66,19 @@ void update_user(user_t **head, client_t **head_client, int client_fd, char *nam
             } else {
                 if (update_client_name(head_client, client_fd, name) != 84)
                     current->log = true;
-                
-                client_event_logged_in(uuid_print, current->name);
-                server_event_user_loaded(uuid_print, current->name);
             }
             return;
         }
         current = current->next;
     }
 
-    if (update_client_name(head_client, client_fd, name) != 84)
+    if (update_client_name(head_client, client_fd, name) != 84) {
         add_user(head, name);
-    client_event_logged_in(uuid_print, current->name);
-    server_event_user_created(uuid_print, current->name);
+        user_t *new_current = *head;
+        char uuid_str[37];
+        uuid_unparse(new_current->uuid, uuid_str);
+        write(client_fd, uuid_str, strlen(uuid_str));
+        // client_event_logged_in(uuid_str, current->name);
+        // server_event_user_created(uuid_str, current->name);
+    }
 }
