@@ -7,13 +7,29 @@
 
 #include "server.h"
 
+void display_users(server_t *s)
+{
+    printf("Liste user:\n");
+    user_t *current_user = s->users;
+    int user_num = 1;
+
+    if (current_user == NULL)
+        printf("Liste user vide\n");
+    while (current_user != NULL) {
+        printf("user %d: [%s]\n", user_num, current_user->name);
+        current_user = current_user->next;
+        user_num++;
+    }
+}
+
 user_t *create_user(char *name)
 {
     user_t *new_user = malloc(sizeof(user_t));
 
     if (new_user != NULL) {
-        new_user->log = false;
-        new_user->name = name;
+        uuid_generate(new_user->uuid);
+        new_user->log = true;
+        new_user->name = strdup(name);
         new_user->next = NULL;
     }
     return new_user;
@@ -22,60 +38,47 @@ user_t *create_user(char *name)
 void add_user(user_t **head, char *name)
 {
     user_t *new_user = create_user(name);
-    user_t *current;
+    user_t *current = *head;
 
     if (new_user == NULL) {
         printf("Error in user creation\n");
         return;
     }
-    if (*head == NULL) {
-        *head = new_user;
+
+    if (current == NULL) {
+        *head = new_user; // Met à jour le pointeur de tête
     } else {
-        current = *head;
-        if (current->next == NULL) {
-            current->next = new_user;
-            return;
-        }
-        for (int i = 0; current->next != NULL; i++) {
+        while (current->next != NULL) {
             current = current->next;
         }
         current->next = new_user;
     }
 }
 
-int search_name(user_t *current, char *name)
+void update_user(user_t **head, client_t **head_client, int client_fd, char *name)
 {
-    int indice = 0;
-
-    if (current->next == NULL) {
+    user_t *current = *head;
+    char *uuid_print = NULL;
+    
+    uuid_unparse(current->uuid, uuid_print);
+    while (current != NULL) {
         if (strcmp(current->name, name) == 0) {
-            return indice;
+            if (current->log) {
+                dprintf(client_fd, "User already assigned to a client\n");
+            } else {
+                if (update_client_name(head_client, client_fd, name) != 84)
+                    current->log = true;
+                
+                client_event_logged_in(uuid_print, current->name);
+                server_event_user_loaded(uuid_print, current->name);
+            }
+            return;
         }
-    }
-    while (current->next != NULL) {
-        if (strcmp(current->name, name) == 0) {
-            return indice;
-        }
-        indice++;
         current = current->next;
     }
-    if (strcmp(current->name, name) == 0) {
-        return indice;
-    }
-    // printf("User not found\n");
-    return -1;
-}
 
-int find_user(user_t **head, char *name)
-{
-    user_t *current;
-
-    if (*head == NULL) {
-        //printf("User not found\n");
-        return -1;
-    } else {
-        current = *head;
-        return search_name(current, name);
-    }
-    return -1;
+    if (update_client_name(head_client, client_fd, name) != 84)
+        add_user(head, name);
+    client_event_logged_in(uuid_print, current->name);
+    server_event_user_created(uuid_print, current->name);
 }

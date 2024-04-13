@@ -22,17 +22,20 @@
     #include <arpa/inet.h>
     #include <uuid/uuid.h>
     #include <unistd.h>
+    #include "../../libs/myteams/logging_client.h"
+    #include "../../libs/myteams/logging_server.h"
 
 typedef struct user {
+    uuid_t uuid;
     bool log;
     char *name;
     struct user *next;
 } user_t;
 
 typedef struct client {
-    uuid_t uuid;
     int fd;
     char *name;
+    bool log;
     struct client *next;
 } client_t;
 
@@ -51,12 +54,16 @@ void printhelp(void);
 int error_handling(int ac, char **av);
 void run_serv(server_t *s);
 void config(server_t *s);
+
+//gestion_client_list.c
 void add_client(client_t **head, int fd);
-int find_client(client_t **head, int fd);
+int update_client_name(client_t **head, int fd, char *name);
+void display_clients(server_t *s);
 
 //gestion_user_list.c
 void add_user(user_t **head, char *name);
-int find_user(user_t **head, char *name);
+void update_user(user_t **head, client_t **head_client, int client_fd, char *name);
+void display_users(server_t *s);
 
 // list.c
 void init_list(server_t *s);

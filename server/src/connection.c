@@ -22,7 +22,8 @@ int handle_new_connection(server_t *s, fd_set *client_fds, int *max_fd)
     if (new_client > *max_fd)
         *max_fd = new_client;
     write(1, "ITERATION..", 11);
-    add_client(&s->clients, new_client);
+    add_client(&(s->clients), new_client);
+    display_clients(s);
 
     return 0;
 }
