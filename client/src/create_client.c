@@ -20,14 +20,23 @@ int create_socket(void)
 
 int client_loop(int sockfd)
 {
-    char *input_str = NULL;
-    size_t size = 0;
+    fd_set readfds;
+    int ret;
 
-    if (getline(&input_str, &size, stdin) == -1) {
+    FD_ZERO(&readfds);
+    FD_SET(sockfd, &readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+    ret = select(sockfd + 1, &readfds, NULL, NULL, NULL);
+    if (ret == -1) {
+        perror("Erreur lors de l'appel à select");
         return 1;
     }
-    input_str[strlen(input_str) - 1] = '\n';
-    send(sockfd, input_str, size, 0);
+    if (FD_ISSET(STDIN_FILENO, &readfds))
+        if (handle_stdin_input(sockfd) != 0)
+            return 1;
+    if (FD_ISSET(sockfd, &readfds))
+        if (handle_server_data(sockfd) != 0)
+            return 1;
     return 0;
 }
 
