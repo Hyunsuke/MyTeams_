@@ -11,6 +11,7 @@ SRC	=	src/main.c 				\
 		src/help.c 				\
 		src/handle_args.c 		\
 		src/create_client.c 	\
+		src/handle_message.c	\
 
 OBJ	=	$(SRC:.c=.o)
 
