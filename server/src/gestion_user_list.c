@@ -9,10 +9,10 @@
 
 void display_users(server_t *s)
 {
-    printf("Liste user:\n");
     user_t *current_user = s->users;
     int user_num = 1;
 
+    printf("Liste user:\n");
     if (current_user == NULL)
         printf("Liste user vide\n");
     while (current_user != NULL) {
@@ -44,9 +44,8 @@ void add_user(user_t **head, char *name)
         printf("Error in user creation\n");
         return;
     }
-
     if (current == NULL) {
-        *head = new_user; // Met à jour le pointeur de tête
+        *head = new_user;
     } else {
         while (current->next != NULL) {
             current = current->next;
@@ -55,32 +54,42 @@ void add_user(user_t **head, char *name)
     }
 }
 
-void update_user(user_t **head, client_t **head_client, int client_fd, char *name)
+void update_cli(user_t **head, client_t **head_client, int cli_fd, char *name)
+{
+    user_t *new_current;
+    char uuid_str[37];
+
+    if (update_client_name(head_client, cli_fd, name) != 84) {
+        add_user(head, name);
+        new_current = *head;
+        uuid_unparse(new_current->uuid, uuid_str);
+        // Send la ligne juste en dessous
+        send_uuid_to_client(cli_fd, uuid_str);
+        usleep(1000);
+        send_name_to_client(cli_fd, new_current->name);
+        usleep(1000);
+        send_logged_in_to_client(cli_fd);
+        //
+        server_event_user_created(uuid_str, new_current->name);
+        server_event_user_logged_in(uuid_str);
+    }
+}
+
+void update_user(user_t **head, client_t **head_client, int cli_fd, char *name)
 {
     user_t *current = *head;
 
     while (current != NULL) {
         if (strcmp(current->name, name) == 0) {
             if (current->log) {
-                dprintf(client_fd, "User already assigned to a client\n");
+                dprintf(cli_fd, "User already assigned to a client\n");
             } else {
-                if (update_client_name(head_client, client_fd, name) != 84)
+                if (update_client_name(head_client, cli_fd, name) != 84)
                     current->log = true;
             }
             return;
         }
         current = current->next;
     }
-
-    if (update_client_name(head_client, client_fd, name) != 84) {
-        add_user(head, name);
-        user_t *new_current = *head;
-        char uuid_str[37];
-        uuid_unparse(new_current->uuid, uuid_str);
-        // Send la ligne juste en dessous 
-        client_event_logged_in(uuid_str, new_current->name);
-        //
-        server_event_user_created(uuid_str, new_current->name);
-        server_event_user_logged_in(uuid_str);
-    }
+    update_cli(head, head_client, cli_fd, name);
 }

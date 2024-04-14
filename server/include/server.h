@@ -22,6 +22,7 @@
     #include <arpa/inet.h>
     #include <uuid/uuid.h>
     #include <unistd.h>
+    #include "stdarg.h"
     #include "../../libs/myteams/logging_client.h"
     #include "../../libs/myteams/logging_server.h"
 
@@ -62,7 +63,7 @@ void display_clients(server_t *s);
 
 //gestion_user_list.c
 void add_user(user_t **head, char *name);
-void update_user(user_t **head, client_t **head_client, int client_fd, char *name);
+void update_user(user_t **head, client_t **head_client, int fd, char *name);
 void display_users(server_t *s);
 
 // list.c
@@ -74,9 +75,11 @@ void handle_incoming_connection(server_t *s);
 void monitor_select_activity(server_t *s, fd_set *client_fds, int max_fd);
 int handle_new_connection(server_t *s, fd_set *client_fds, int *max_fd);
 
-// utils.c
+//my_str_to_word_array.c
 char **my_str_to_word_array(char const *str, char separator);
 int number_back(char const *str, char separator);
+
+// utils.c
 bool check_quotes(const char *str);
 char *remove_quotes(const char *str);
 
@@ -85,6 +88,11 @@ void handle_commands(server_t *s, int client_fd);
 
 //cmd_login.c
 void login_cmd(server_t *s, int client_fd);
+
+//send_infos.c
+void send_uuid_to_client(int client_fd, char *uuid_str);
+void send_name_to_client(int client_fd, char *name_str);
+void send_logged_in_to_client(int client_fd);
 
 typedef struct {
     const char *command;

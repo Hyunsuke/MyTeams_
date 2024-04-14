@@ -9,10 +9,10 @@
 
 void display_clients(server_t *s)
 {
-    printf("Liste clients:\n");
     client_t *current_client = s->clients;
     int client_num = 1;
 
+    printf("Liste clients:\n");
     if (current_client == NULL)
         printf("Liste client vide\n");
     while (current_client != NULL) {

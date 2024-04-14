@@ -32,10 +32,11 @@ int send_message(int sockfd, const char *message)
     return 0;
 }
 
-int receive_message(int sockfd)
+int receive_message(client_t *c, int sockfd)
 {
     char buffer[1024];
     ssize_t bytes_received;
+    char **input_commands = NULL;
 
     bytes_received = recv(sockfd, buffer, 1024, 0);
     if (bytes_received == -1) {
@@ -47,6 +48,8 @@ int receive_message(int sockfd)
     } else {
         buffer[bytes_received] = '\0';
     }
+    input_commands = my_str_to_word_array(buffer, ' ');
+    handle_commands(c, input_commands, buffer);
     return 0;
 }
 
@@ -65,9 +68,9 @@ int handle_stdin_input(int sockfd)
     return 0;
 }
 
-int handle_server_data(int sockfd)
+int handle_server_data(client_t *c, int sockfd)
 {
-    if (receive_message(sockfd) != 0) {
+    if (receive_message(c, sockfd) != 0) {
         return 1;
     }
     return 0;

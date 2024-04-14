@@ -12,6 +12,11 @@ SRC	=	src/main.c 				\
 		src/handle_args.c 		\
 		src/create_client.c 	\
 		src/handle_message.c	\
+		src/handle_commands.c	\
+		src/my_str_to_word_array.c	\
+		src/cmd/uuid.c	\
+		src/cmd/name.c	\
+		src/cmd/print.c	\
 
 OBJ	=	$(SRC:.c=.o)
 

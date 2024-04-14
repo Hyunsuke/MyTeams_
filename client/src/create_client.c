@@ -18,7 +18,7 @@ int create_socket(void)
     return sockfd;
 }
 
-int client_loop(int sockfd)
+int client_loop(client_t *c, int sockfd)
 {
     fd_set readfds;
     int ret;
@@ -35,7 +35,7 @@ int client_loop(int sockfd)
         if (handle_stdin_input(sockfd) != 0)
             return 1;
     if (FD_ISSET(sockfd, &readfds))
-        if (handle_server_data(sockfd) != 0)
+        if (handle_server_data(c, sockfd) != 0)
             return 1;
     return 0;
 }
@@ -62,7 +62,7 @@ int connect_to_server(char *serv_ip, int serv_port)
     return sockfd;
 }
 
-int create_client(char *serv_ip, int serv_port)
+int create_client(client_t *c, char *serv_ip, int serv_port)
 {
     int sockfd = connect_to_server(serv_ip, serv_port);
 
@@ -70,7 +70,7 @@ int create_client(char *serv_ip, int serv_port)
         return 84;
     }
     while (1) {
-        if (client_loop(sockfd))
+        if (client_loop(c, sockfd))
             break;
     }
     close(sockfd);
