@@ -58,13 +58,15 @@ void config(server_t *s);
 
 //gestion_client_list.c
 void add_client(client_t **head, int fd);
+
+//modif_login.c
 int update_client_name(client_t **head, int fd, char *name);
-void display_clients(server_t *s);
 
 //gestion_user_list.c
 void add_user(user_t **head, char *name);
+
+//modif_login.c
 void update_user(user_t **head, client_t **head_client, int fd, char *name);
-void display_users(server_t *s);
 
 // list.c
 void init_list(server_t *s);
