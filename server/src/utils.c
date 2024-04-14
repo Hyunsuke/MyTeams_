@@ -1,47 +1,27 @@
 /*
-** EPITECH PROJECT, 2022
-** my_str_to_word_array
+** EPITECH PROJECT, 2023
+** my_teams
 ** File description:
-** strnonalphanumerics
+** utils.c
 */
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
-int number_back(char const *str, char separator)
+#include "server.h"
+
+bool check_quotes(const char *str)
 {
-    int i = 0;
-    int n = 1;
-
-    while (str[i] != '\0') {
-        if (str[i] == separator) {
-            n = n + 1;
-        }
-        i++;
-    }
-    return (n);
+    if (str[0] == '"' && str[strlen(str) - 1] == '"')
+        return true;
+    else
+        return false;
 }
 
-char **my_str_to_word_array(char const *str, char separator)
+char *remove_quotes(const char *str)
 {
-    int scale_y = number_back(str, separator);
-    int y = 0;
-    int x = 0;
-    int index = 0;
-    char **generator = malloc(sizeof(char *) * (scale_y + 1));
+    int length = strlen(str);
+    char *new_str = malloc(length - 1);
 
-    for (int tmp = 0; str[index]; y++) {
-        x = 0;
-    for (tmp = 0; str[index + tmp] != separator && str[index + tmp]; tmp++);
-    generator[y] = malloc(sizeof(char) * (tmp + 1));
-        for (; str[index] != separator && str[index]; x++) {
-            generator[y][x] = str[index];
-            index++;
-    }
-        generator[y][x] = '\0';
-        if (str[index])
-            index++;
-    }
-    generator[y] = NULL;
-    return (generator);
+    strncpy(new_str, str + 1, length - 2);
+    new_str[length - 2] = '\0';
+    printf("%s", new_str);
+    return new_str;
 }

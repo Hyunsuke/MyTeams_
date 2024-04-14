@@ -18,16 +18,25 @@ int create_socket(void)
     return sockfd;
 }
 
-int client_loop(int sockfd)
+int client_loop(client_t *c, int sockfd)
 {
-    char *input_str = NULL;
-    size_t size = 0;
+    fd_set readfds;
+    int ret;
 
-    if (getline(&input_str, &size, stdin) == -1) {
+    FD_ZERO(&readfds);
+    FD_SET(sockfd, &readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+    ret = select(sockfd + 1, &readfds, NULL, NULL, NULL);
+    if (ret == -1) {
+        perror("Erreur lors de l'appel à select");
         return 1;
     }
-    input_str[strlen(input_str) - 1] = '\n';
-    send(sockfd, input_str, size, 0);
+    if (FD_ISSET(STDIN_FILENO, &readfds))
+        if (handle_stdin_input(sockfd) != 0)
+            return 1;
+    if (FD_ISSET(sockfd, &readfds))
+        if (handle_server_data(c, sockfd) != 0)
+            return 1;
     return 0;
 }
 
@@ -53,7 +62,7 @@ int connect_to_server(char *serv_ip, int serv_port)
     return sockfd;
 }
 
-int create_client(char *serv_ip, int serv_port)
+int create_client(client_t *c, char *serv_ip, int serv_port)
 {
     int sockfd = connect_to_server(serv_ip, serv_port);
 
@@ -61,7 +70,7 @@ int create_client(char *serv_ip, int serv_port)
         return 84;
     }
     while (1) {
-        if (client_loop(sockfd))
+        if (client_loop(c, sockfd))
             break;
     }
     close(sockfd);

@@ -14,5 +14,7 @@ void init_server(server_t *s)
 
 void init_list(server_t *s)
 {
+    init_server(s);
     s->clients = NULL;
+    s->users = NULL;
 }

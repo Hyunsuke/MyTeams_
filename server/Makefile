@@ -13,10 +13,14 @@ SRC	=	src/main.c 				\
 		src/server.c			\
 		src/config.c 			\
 		src/gestion_client_list.c \
+		src/gestion_user_list.c \
 		src/list.c \
 		src/connection.c \
+		src/my_str_to_word_array.c \
 		src/utils.c \
 		src/handle_commands.c 	\
+		src/cmd/cmd_login.c \
+		src/send_infos.c \
 
 OBJ	=	$(SRC:.c=.o)
 
@@ -30,7 +34,7 @@ NAME	=	../myteams_server
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -o $(NAME) $(OBJ) $(CFLAGS)
+	$(CC) -o $(NAME) $(OBJ) $(CFLAGS) $(LDFLAGS) $(LDLIBS)
 
 clean:
 	rm -f $(OBJ)
