@@ -58,9 +58,11 @@ void config(server_t *s);
 
 //gestion_client_list.c
 void add_client(client_t **head, int fd);
+void remove_client(client_t **head, int fd, server_t *s);
 
 //modif_login.c
 int update_client_name(client_t **head, int fd, char *name);
+void display_clients(server_t *s);
 
 //gestion_user_list.c
 void add_user(user_t **head, char *name);

@@ -31,8 +31,13 @@ void client_is_connected(server_t *s, int client_fd)
     int bytes_received = 0;
 
     bytes_received = recv(client_fd, buffer, sizeof(buffer), 0);
-    if (bytes_received <= 0)
+    if (bytes_received < 0)
             return;
+    if (bytes_received == 0) {
+        printf("Logged out\n");
+        remove_client(&s->clients, client_fd, s);
+        return;
+    }
     buffer[bytes_received] = '\0';
     s->input_tab = my_str_to_word_array(buffer, ' ');
     handle_commands(s, client_fd);
