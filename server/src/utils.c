@@ -22,6 +22,5 @@ char *remove_quotes(const char *str)
 
     strncpy(new_str, str + 1, length - 2);
     new_str[length - 2] = '\0';
-    printf("%s", new_str);
     return new_str;
 }

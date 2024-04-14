@@ -73,6 +73,6 @@ int create_client(client_t *c, char *serv_ip, int serv_port)
         if (client_loop(c, sockfd))
             break;
     }
-    close(sockfd);
+    // close(sockfd);
     return 0;
 }
