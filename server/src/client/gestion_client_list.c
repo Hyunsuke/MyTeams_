@@ -23,17 +23,20 @@ client_t *create_client(int fd)
 void remove_client(client_t **head, int fd, server_t *s)
 {
     client_t *current = *head;
+    client_t *prev = NULL;
 
-    if (*head == NULL) {
-        printf("La liste est vide.\n");
-        return;
-    }
-    while (current != NULL && current->fd != fd)
+    while (current != NULL && current->fd != fd) {
+        prev = current;
         current = current->next;
+    }
     if (current == NULL) {
         printf("Client non trouvé.\n");
         return;
     }
+    if (prev == NULL)
+        *head = current->next;
+    else
+        prev->next = current->next;
     close(current->fd);
     FD_CLR(current->fd, &s->client_fds);
     free(current);
