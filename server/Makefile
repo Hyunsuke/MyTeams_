@@ -23,6 +23,8 @@ SRC	=	src/main.c 				\
 		src/handle_commands.c 	\
 		src/cmd/cmd_login.c \
 		src/send_infos.c \
+		src/cmd/cmd_send.c 		\
+		src/cmd/cmd_messages.c 	\
 
 OBJ	=	$(SRC:.c=.o)
 

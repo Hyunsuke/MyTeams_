@@ -98,6 +98,12 @@ void send_uuid_to_client(int client_fd, char *uuid_str);
 void send_name_to_client(int client_fd, char *name_str);
 void send_logged_in_to_client(int client_fd);
 
+// cmd_send.c
+void send_cmd(server_t *s, int client_fd);
+
+// cmd_messages.c
+void messages_cmd(server_t *s, int client_fd);
+
 typedef struct {
     const char *command;
     void (*handler)(server_t *, int);
