@@ -14,14 +14,17 @@ SRC	=	src/main.c 				\
 		src/config.c 			\
 		src/client/gestion_client_list.c \
 		src/client/modif_login.c \
+		src/client/modif_logout.c \
 		src/user/gestion_user_list.c \
 		src/user/modif_login.c \
+		src/user/modif_logout.c \
 		src/list.c \
 		src/connection.c \
 		src/my_str_to_word_array.c \
 		src/utils.c \
 		src/handle_commands.c 	\
 		src/cmd/cmd_login.c \
+		src/cmd/cmd_logout.c \
 		src/send_infos.c \
 
 OBJ	=	$(SRC:.c=.o)

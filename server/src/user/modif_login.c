@@ -40,11 +40,22 @@ void update_cli(user_t **head, client_t **head_client, int cli_fd, char *name)
 void check_alrlog(user_t *current, client_t **head_client, int cli_fd,
     char *name)
 {
+    char uuid_str[37];
+
     if (current->log) {
         dprintf(cli_fd, "User already assigned to a client\n");
     } else {
-        if (update_client_name(head_client, cli_fd, name) != 84)
+        if (update_client_name(head_client, cli_fd, name) != 84) {
             current->log = true;
+            uuid_unparse(current->uuid, uuid_str);
+            server_event_user_loaded(uuid_str, current->name);
+            server_event_user_logged_in(uuid_str);
+            send_uuid_to_client(cli_fd, uuid_str);
+            usleep(1000);
+            send_name_to_client(cli_fd, current->name);
+            usleep(1000);
+            send_logged_in_to_client(cli_fd);
+        }
     }
 }
 

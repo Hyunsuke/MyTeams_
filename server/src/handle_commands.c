@@ -9,6 +9,7 @@
 
 command_handler_t commandHandlers[] = {
     {"/login", login_cmd},
+    {"/logout", logout_cmd},
     {NULL, NULL}
 };
 

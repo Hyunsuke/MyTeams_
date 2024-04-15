@@ -29,3 +29,10 @@ void send_logged_in_to_client(int client_fd)
 
     send(client_fd, buffer, strlen(buffer), 0);
 }
+
+void send_logged_out_to_client(int client_fd)
+{
+    char buffer[1024] = "NOLOGGED";
+
+    send(client_fd, buffer, strlen(buffer), 0);
+}

@@ -49,6 +49,8 @@ typedef struct server_s {
     client_t *clients;
     user_t *users;
     char **input_tab;
+    char *name_logout;
+    bool is_Ctrl_c;
 } server_t;
 
 void printhelp(void);
@@ -93,10 +95,21 @@ void handle_commands(server_t *s, int client_fd);
 //cmd_login.c
 void login_cmd(server_t *s, int client_fd);
 
+//cmd_logout.c
+void logout_cmd(server_t *s, int client_fd);
+void update_user_and_client_logout(server_t *s, user_t **user_head,
+    client_t **client_head, int cli_fd);
+int logout_client(client_t *current_client, int cli_fd, server_t *s);
+void logout_user(user_t *current_user, server_t *s, int cli_fd);
+
 //send_infos.c
 void send_uuid_to_client(int client_fd, char *uuid_str);
 void send_name_to_client(int client_fd, char *name_str);
 void send_logged_in_to_client(int client_fd);
+void send_logged_out_to_client(int client_fd);
+
+void display_clients(server_t *s);
+void display_users(server_t *s);
 
 typedef struct {
     const char *command;

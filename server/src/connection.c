@@ -34,7 +34,8 @@ void client_is_connected(server_t *s, int client_fd)
     if (bytes_received < 0)
             return;
     if (bytes_received == 0) {
-        printf("Logged out\n");
+        s->is_Ctrl_c = true;
+        update_user_and_client_logout(s, &s->users, &s->clients, client_fd);
         remove_client(&s->clients, client_fd, s);
         return;
     }

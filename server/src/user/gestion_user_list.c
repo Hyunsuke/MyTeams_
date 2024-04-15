@@ -7,6 +7,28 @@
 
 #include "server.h"
 
+void display_users(server_t *s)
+{
+    user_t *current_user = s->users;
+    int user_num = 1;
+    char *log;
+
+    printf("Liste Users:\n");
+    if (current_user == NULL)
+        printf("Liste User vide\n");
+    while (current_user != NULL) {
+        if (current_user->log == false) {
+            log = "false";
+        } else {
+            log = "true";
+        }
+        printf("User %d: name[%s] log[%s]\n", user_num,
+            current_user->name, log);
+        current_user = current_user->next;
+        user_num++;
+    }
+}
+
 user_t *create_user(char *name)
 {
     user_t *new_user = malloc(sizeof(user_t));

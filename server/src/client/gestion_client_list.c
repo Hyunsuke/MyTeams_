@@ -7,6 +7,26 @@
 
 #include "server.h"
 
+void display_clients(server_t *s)
+{
+    client_t *current_client = s->clients;
+    int client_num = 1;
+
+    printf("Liste clients:\n");
+    if (current_client == NULL)
+        printf("Liste client vide\n");
+    while (current_client != NULL) {
+        if (current_client->name != NULL)
+            printf("Client %d: [%s] et [%d]\n", client_num,
+                current_client->name, current_client->fd);
+        else
+            printf("Client %d: [%s] et [%d]\n", client_num, "No Name",
+                current_client->fd);
+        current_client = current_client->next;
+        client_num++;
+    }
+}
+
 client_t *create_client(int fd)
 {
     client_t *new_client = malloc(sizeof(client_t));
