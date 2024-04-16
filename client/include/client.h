@@ -54,6 +54,8 @@ void print_send(client_t *client, char **commands);
 void print_logged_out(client_t *client, char **commands);
 void print_users(client_t *client, char **commands);
 void print_unauthorized(client_t *client, char **commands);
+void print_unknown_user(client_t *client, char **commands);
+void print_user(client_t *client, char **commands);
 
 //my_str_to_word_array.c
 char **my_str_to_word_array(char const *str, char separator);
