@@ -129,6 +129,7 @@ void send_unknown_user_to_client(int client_fd);
 
 // cmd_send.c
 void send_cmd(server_t *s, int client_fd);
+void send_bad_uuid(int client_fd, char *uuid);
 
 // client/modif_send.c
 int find_client(server_t *s, int client_fd,
