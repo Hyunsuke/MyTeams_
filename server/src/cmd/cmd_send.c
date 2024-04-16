@@ -59,10 +59,6 @@ void execute_send_cmd(server_t *s, int client_fd, char *uuid, char *message)
     user_t *dest_user;
     client_t *dest_client;
 
-    if (handle_send_inputs(s, client_fd) == 84)
-        return;
-    if (check_and_handle_client_connection(s, client_fd) == 84)
-        return;
     if (find_sender(s, client_fd, &sender_user) == 84)
         return;
     if (find_user(s, client_fd, uuid, &dest_user) == 84) {
@@ -78,6 +74,10 @@ void send_cmd(server_t *s, int client_fd)
     char *uuid;
     char *message;
 
+    if (handle_send_inputs(s, client_fd) == 84)
+        return;
+    if (check_and_handle_client_connection(s, client_fd) == 84)
+        return;
     uuid = remove_quotes(s->input_tab[1]);
     message = remove_quotes(s->input_tab[2]);
     execute_send_cmd(s, client_fd, uuid, message);
