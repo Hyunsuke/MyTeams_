@@ -12,7 +12,7 @@ void send_user_infos(user_t *current_user, int client_fd)
     char uuid_str[37];
     char *log;
 
-    log = (current_user->log == false) ? "false" : "true";
+    log = (current_user->log <= 0) ? "false" : "true";
     uuid_unparse(current_user->uuid, uuid_str);
     send_uuid_to_client(client_fd, uuid_str);
     usleep(1000);

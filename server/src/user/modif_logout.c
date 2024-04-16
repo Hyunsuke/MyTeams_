@@ -25,7 +25,7 @@ void logout_user(user_t *current_user, server_t *s, int cli_fd)
 
     while (current_user != NULL) {
         if (strcmp(current_user->name, s->name_logout) == 0) {
-            current_user->log = false;
+            current_user->log -= 1;
             uuid_unparse(current_user->uuid, uuid_str);
             server_event_user_logged_out(uuid_str);
             check_client_down(current_user, s, cli_fd, uuid_str);

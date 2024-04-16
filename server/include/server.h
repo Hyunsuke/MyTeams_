@@ -28,7 +28,7 @@
 
 typedef struct user {
     uuid_t uuid;
-    bool log;
+    int log;
     char *name;
     struct user *next;
 } user_t;

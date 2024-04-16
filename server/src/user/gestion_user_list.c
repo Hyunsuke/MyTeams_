@@ -35,7 +35,7 @@ user_t *create_user(char *name)
 
     if (new_user != NULL) {
         uuid_generate(new_user->uuid);
-        new_user->log = true;
+        new_user->log = 1;
         new_user->name = strdup(name);
         new_user->next = NULL;
     }
