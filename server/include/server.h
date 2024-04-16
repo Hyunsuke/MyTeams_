@@ -147,6 +147,9 @@ void messages_cmd(server_t *s, int client_fd);
 void display_clients(server_t *s);
 void display_users(server_t *s);
 
+//cmd_help.c
+void help_cmd(server_t *s, int client_fd);
+
 typedef struct {
     const char *command;
     void (*handler)(server_t *, int);

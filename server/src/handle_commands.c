@@ -14,6 +14,7 @@ command_handler_t commandHandlers[] = {
     {"/send", send_cmd},
     {"/messages", messages_cmd},
     {"/user", user_cmd},
+    {"/help", help_cmd},
     {NULL, NULL}
 };
 

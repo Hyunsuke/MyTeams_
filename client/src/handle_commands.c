@@ -19,6 +19,7 @@ command_handler_t commandHandlers[] = {
     {"MESSAGE", set_message},
     {"UNKNOWNUSER", print_unknown_user},
     {"ONEUSER", print_user},
+    {"HELP", print_help},
     {NULL, NULL}
 };
 

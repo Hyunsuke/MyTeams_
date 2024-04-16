@@ -34,6 +34,7 @@ SRC	=	src/main.c 				\
 		src/user/modif_send.c 	\
 		src/client/modif_send.c \
 		src/send_info/send_error.c \
+		src/cmd/cmd_help.c \
 
 
 OBJ	=	$(SRC:.c=.o)

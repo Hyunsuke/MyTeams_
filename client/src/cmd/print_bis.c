@@ -18,3 +18,10 @@ void print_user(client_t *client, char **commands)
     (void)commands;
     client_print_user(client->uuid_str, client->name, client->status);
 }
+
+void print_help(client_t *c, char **commands)
+{
+    (void)c;
+    (void)commands;
+    printhelp();
+}
