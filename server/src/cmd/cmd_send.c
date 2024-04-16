@@ -30,34 +30,35 @@ int handle_send_inputs(server_t *s)
     return 0;
 }
 
-user_t *find_user_by_uuid(user_t *head, const char *uuid)
+void receive_message(int client_fd, char *sender_uuid, char *message)
 {
-    user_t *current = head;
-    char uuid_str[37];
-
-    while (current != NULL) {
-        uuid_unparse(current->uuid, uuid_str);
-        if (strcmp(uuid_str, uuid) == 0) {
-            return current;
-        }
-        current = current->next;
-    }
-    return NULL;
+    send_message_to_client(client_fd, message);
+    usleep(1000);
+    send_uuid_to_client(client_fd, sender_uuid);
+    usleep(1000);
+    send_send_to_client(client_fd);
 }
 
 void send_cmd(server_t *s, int client_fd)
 {
     char *uuid;
     char *message;
+    char sender_uuid_str[37];
+    user_t *sender_user;
     user_t *dest_user;
+    client_t *dest_client;
 
     if (handle_send_inputs(s) == 84)
         return;
+    if (find_sender(s, client_fd, &sender_user) == 84)
+        return;
     uuid = remove_quotes(s->input_tab[1]);
     message = remove_quotes(s->input_tab[2]);
-    dest_user = find_user_by_uuid(s->users, uuid);
-    if (dest_user == NULL) {
-        write(client_fd, "User not found\n", strlen("User not found\n"));
+    if (find_user(s, client_fd, uuid, &dest_user) == 84)
         return;
-    }
+    if (find_client(s, client_fd, dest_user, &dest_client) == 84)
+        return;
+    uuid_unparse(sender_user->uuid, sender_uuid_str);
+    server_event_private_message_sended(sender_uuid_str, uuid, message);
+    receive_message(dest_client->fd, sender_uuid_str, message);
 }

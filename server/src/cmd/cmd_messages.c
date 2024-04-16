@@ -32,4 +32,6 @@ void messages_cmd(server_t *s, int client_fd)
     if (handle_messages_intputs(s) == 84)
         return;
     uuid = remove_quotes(s->input_tab[1]);
+    (void)uuid;
+    (void)client_fd;
 }

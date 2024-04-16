@@ -59,6 +59,7 @@ void config(server_t *s);
 //gestion_client_list.c
 void add_client(client_t **head, int fd);
 void remove_client(client_t **head, int fd, server_t *s);
+client_t *find_client_by_name(client_t *head, const char *name);
 
 //modif_login.c
 int update_client_name(client_t **head, int fd, char *name);
@@ -66,6 +67,10 @@ void display_clients(server_t *s);
 
 //gestion_user_list.c
 void add_user(user_t **head, char *name);
+user_t *find_user_by_uuid(user_t *head, const char *uuid);
+user_t *find_user_by_name(user_t *head, const char *name);
+user_t *find_user_by_fd(client_t *head_client,
+    user_t *head_user, int client_fd);
 
 //modif_login.c
 void update_user(user_t **head, client_t **head_client, int fd, char *name);
@@ -97,9 +102,19 @@ void login_cmd(server_t *s, int client_fd);
 void send_uuid_to_client(int client_fd, char *uuid_str);
 void send_name_to_client(int client_fd, char *name_str);
 void send_logged_in_to_client(int client_fd);
+void send_message_to_client(int client_fd, char *mess);
+void send_send_to_client(int client_fd);
 
 // cmd_send.c
 void send_cmd(server_t *s, int client_fd);
+
+// client/modif_send.c
+int find_client(server_t *s, int client_fd,
+    user_t *dest_user, client_t **dest_client);
+
+// user/modif_send.c
+int find_sender(server_t *s, int client_fd, user_t **sender_user);
+int find_user(server_t *s, int client_fd, char *uuid, user_t **dest_user);
 
 // cmd_messages.c
 void messages_cmd(server_t *s, int client_fd);

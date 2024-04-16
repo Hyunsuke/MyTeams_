@@ -60,3 +60,16 @@ void add_client(client_t **head, int fd)
         current->next = new_client;
     }
 }
+
+client_t *find_client_by_name(client_t *head, const char *name)
+{
+    client_t *current = head;
+
+    while (current != NULL) {
+        if (strcmp(current->name, name) == 0) {
+            return current;
+        }
+        current = current->next;
+    }
+    return NULL;
+}

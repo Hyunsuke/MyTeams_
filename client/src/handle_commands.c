@@ -11,6 +11,8 @@ command_handler_t commandHandlers[] = {
     {"UUID", set_uuid},
     {"NAME", set_name},
     {"LOGGED", print_logged_in},
+    {"SEND", print_send},
+    {"MESSAGE", set_message},
     {NULL, NULL}
 };
 
