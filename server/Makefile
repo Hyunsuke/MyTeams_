@@ -26,12 +26,15 @@ SRC	=	src/main.c 				\
 		src/cmd/cmd_login.c \
 		src/cmd/cmd_logout.c \
 		src/cmd/cmd_users.c \
+		src/cmd/cmd_user.c \
 		src/send_info/send_data.c \
 		src/send_info/send_cmd.c \
 		src/cmd/cmd_send.c 		\
 		src/cmd/cmd_messages.c 	\
 		src/user/modif_send.c 	\
 		src/client/modif_send.c \
+		src/send_info/send_error.c \
+
 
 OBJ	=	$(SRC:.c=.o)
 

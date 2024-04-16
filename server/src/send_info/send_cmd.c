@@ -28,9 +28,16 @@ void send_users_to_client(int client_fd)
     send(client_fd, buffer, strlen(buffer), 0);
 }
 
-void send_unauthorized_to_client(int client_fd)
+void send_send_to_client(int client_fd)
 {
-    char buffer[1024] = "UNAUTHORIZED";
+    char buffer[1024] = "SEND";
+
+    send(client_fd, buffer, strlen(buffer), 0);
+}
+
+void send_user_to_client(int client_fd)
+{
+    char buffer[1024] = "ONEUSER";
 
     send(client_fd, buffer, strlen(buffer), 0);
 }

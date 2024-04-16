@@ -111,6 +111,9 @@ void logout_user(user_t *current_user, server_t *s, int cli_fd);
 //cmd_users.c
 void users_cmd(server_t *s, int client_fd);
 
+//cmd_user.c
+void user_cmd(server_t *s, int client_fd);
+
 //send_infos.c
 void send_uuid_to_client(int client_fd, char *uuid_str);
 void send_name_to_client(int client_fd, char *name_str);
@@ -118,6 +121,11 @@ void send_status_to_client(int client_fd, char *status);
 void send_logged_in_to_client(int client_fd);
 void send_message_to_client(int client_fd, char *mess);
 void send_send_to_client(int client_fd);
+void send_logged_out_to_client(int client_fd);
+void send_users_to_client(int client_fd);
+void send_unauthorized_to_client(int client_fd);
+void send_user_to_client(int client_fd);
+void send_unknown_user_to_client(int client_fd);
 
 // cmd_send.c
 void send_cmd(server_t *s, int client_fd);
@@ -132,9 +140,6 @@ int find_user(server_t *s, int client_fd, char *uuid, user_t **dest_user);
 
 // cmd_messages.c
 void messages_cmd(server_t *s, int client_fd);
-void send_logged_out_to_client(int client_fd);
-void send_users_to_client(int client_fd);
-void send_unauthorized_to_client(int client_fd);
 
 void display_clients(server_t *s);
 void display_users(server_t *s);

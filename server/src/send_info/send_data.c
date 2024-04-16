@@ -38,10 +38,3 @@ void send_status_to_client(int client_fd, char *status)
     strcat(buffer, status);
     send(client_fd, buffer, strlen(buffer), 0);
 }
-
-void send_send_to_client(int client_fd)
-{
-    char buffer[1024] = "SEND";
-
-    send(client_fd, buffer, strlen(buffer), 0);
-}
