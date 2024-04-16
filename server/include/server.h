@@ -134,6 +134,8 @@ void send_bad_uuid(int client_fd, char *uuid);
 // client/modif_send.c
 int find_client(server_t *s, int client_fd,
     user_t *dest_user, client_t **dest_client);
+void receive_message(int client_fd, char *sender_uuid, char *message);
+void send_bad_uuid(int client_fd, char *uuid);
 
 // user/modif_send.c
 int find_sender(server_t *s, int client_fd, user_t **sender_user);

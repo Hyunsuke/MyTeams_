@@ -30,30 +30,38 @@ int handle_send_inputs(server_t *s, int client_fd)
     return 0;
 }
 
-void receive_message(int client_fd, char *sender_uuid, char *message)
+int check_and_handle_client_connection(server_t *s, int client_fd)
 {
-    send_message_to_client(client_fd, message);
-    usleep(1000);
-    send_uuid_to_client(client_fd, sender_uuid);
-    usleep(1000);
-    send_send_to_client(client_fd);
-    usleep(1000);
+    client_t **client_head = &s->clients;
+    client_t *current_client = *client_head;
+
+    if (check_connection_client(current_client, client_fd) == 84) {
+        send_unauthorized_to_client(client_fd);
+        usleep(1000);
+        return 84;
+    }
+    return 0;
 }
 
-void send_bad_uuid(int client_fd, char *uuid)
+void send_private_message(user_t *sender_user, char *uuid,
+    char *message, client_t *dest_client)
 {
-    send_uuid_to_client(client_fd, uuid);
-    usleep(1000);
+    char sender_uuid_str[37];
+
+    uuid_unparse(sender_user->uuid, sender_uuid_str);
+    server_event_private_message_sended(sender_uuid_str, uuid, message);
+    receive_message(dest_client->fd, sender_uuid_str, message);
 }
 
 void execute_send_cmd(server_t *s, int client_fd, char *uuid, char *message)
 {
-    char sender_uuid_str[37];
     user_t *sender_user;
     user_t *dest_user;
     client_t *dest_client;
 
     if (handle_send_inputs(s, client_fd) == 84)
+        return;
+    if (check_and_handle_client_connection(s, client_fd) == 84)
         return;
     if (find_sender(s, client_fd, &sender_user) == 84)
         return;
@@ -62,9 +70,7 @@ void execute_send_cmd(server_t *s, int client_fd, char *uuid, char *message)
     }
     if (find_client(s, client_fd, dest_user, &dest_client) == 84)
         return;
-    uuid_unparse(sender_user->uuid, sender_uuid_str);
-    server_event_private_message_sended(sender_uuid_str, uuid, message);
-    receive_message(dest_client->fd, sender_uuid_str, message);
+    send_private_message(sender_user, uuid, message, dest_client);
 }
 
 void send_cmd(server_t *s, int client_fd)
