@@ -24,6 +24,7 @@
 typedef struct client {
     char *name;
     char *uuid_str;
+    char *message;
     bool log;
     int status;
 } client_t;
@@ -46,8 +47,10 @@ void process_command(client_t *c, char *first_inp, char **commands, char *buf);
 //cmd
 void set_uuid(client_t *c, char **commands);
 void set_name(client_t *c, char **commands);
+void set_message(client_t *c, char **commands);
 void set_status(client_t *c, char **commands);
 void print_logged_in(client_t *client, char **commands);
+void print_send(client_t *client, char **commands);
 void print_logged_out(client_t *client, char **commands);
 void print_users(client_t *client, char **commands);
 void print_unauthorized(client_t *client, char **commands);

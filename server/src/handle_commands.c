@@ -11,6 +11,8 @@ command_handler_t commandHandlers[] = {
     {"/login", login_cmd},
     {"/logout", logout_cmd},
     {"/users", users_cmd},
+    {"/send", send_cmd},
+    {"/messages", messages_cmd},
     {NULL, NULL}
 };
 

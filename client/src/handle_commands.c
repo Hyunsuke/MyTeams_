@@ -15,6 +15,8 @@ command_handler_t commandHandlers[] = {
     {"NOLOGGED", print_logged_out},
     {"USERS", print_users},
     {"UNAUTHORIZED", print_unauthorized},
+    {"SEND", print_send},
+    {"MESSAGE", set_message},
     {NULL, NULL}
 };
 

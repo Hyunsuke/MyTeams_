@@ -31,3 +31,9 @@ void print_unauthorized(client_t *client, char **commands)
     (void)client;
     client_error_unauthorized();
 }
+
+void print_send(client_t *client, char **commands)
+{
+    (void)commands;
+    client_event_private_message_received(client->uuid_str, client->message);
+}
