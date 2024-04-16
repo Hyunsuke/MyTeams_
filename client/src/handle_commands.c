@@ -10,8 +10,11 @@
 command_handler_t commandHandlers[] = {
     {"UUID", set_uuid},
     {"NAME", set_name},
+    {"STATUS", set_status},
     {"LOGGED", print_logged_in},
     {"NOLOGGED", print_logged_out},
+    {"USERS", print_users},
+    {"UNAUTHORIZED", print_unauthorized},
     {NULL, NULL}
 };
 

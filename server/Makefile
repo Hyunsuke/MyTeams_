@@ -25,7 +25,9 @@ SRC	=	src/main.c 				\
 		src/handle_commands.c 	\
 		src/cmd/cmd_login.c \
 		src/cmd/cmd_logout.c \
-		src/send_infos.c \
+		src/cmd/cmd_users.c \
+		src/send_info/send_data.c \
+		src/send_info/send_cmd.c \
 
 OBJ	=	$(SRC:.c=.o)
 

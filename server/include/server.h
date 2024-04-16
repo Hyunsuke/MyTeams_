@@ -88,6 +88,7 @@ int number_back(char const *str, char separator);
 // utils.c
 bool check_quotes(const char *str);
 char *remove_quotes(const char *str);
+int check_connection_client(client_t *current_client, int client_fd);
 
 //handle_commands.c
 void handle_commands(server_t *s, int client_fd);
@@ -102,11 +103,17 @@ void update_user_and_client_logout(server_t *s, user_t **user_head,
 int logout_client(client_t *current_client, int cli_fd, server_t *s);
 void logout_user(user_t *current_user, server_t *s, int cli_fd);
 
+//cmd_users.c
+void users_cmd(server_t *s, int client_fd);
+
 //send_infos.c
 void send_uuid_to_client(int client_fd, char *uuid_str);
 void send_name_to_client(int client_fd, char *name_str);
+void send_status_to_client(int client_fd, char *status);
 void send_logged_in_to_client(int client_fd);
 void send_logged_out_to_client(int client_fd);
+void send_users_to_client(int client_fd);
+void send_unauthorized_to_client(int client_fd);
 
 void display_clients(server_t *s);
 void display_users(server_t *s);

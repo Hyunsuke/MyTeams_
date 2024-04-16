@@ -23,16 +23,10 @@ void send_name_to_client(int client_fd, char *name_str)
     send(client_fd, buffer, strlen(buffer), 0);
 }
 
-void send_logged_in_to_client(int client_fd)
+void send_status_to_client(int client_fd, char *status)
 {
-    char buffer[1024] = "LOGGED";
+    char buffer[1024] = "STATUS ";
 
-    send(client_fd, buffer, strlen(buffer), 0);
-}
-
-void send_logged_out_to_client(int client_fd)
-{
-    char buffer[1024] = "NOLOGGED";
-
+    strcat(buffer, status);
     send(client_fd, buffer, strlen(buffer), 0);
 }

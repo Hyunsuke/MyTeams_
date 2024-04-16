@@ -10,6 +10,7 @@
 command_handler_t commandHandlers[] = {
     {"/login", login_cmd},
     {"/logout", logout_cmd},
+    {"/users", users_cmd},
     {NULL, NULL}
 };
 

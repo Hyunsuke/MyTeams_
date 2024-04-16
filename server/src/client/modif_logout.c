@@ -28,8 +28,8 @@ int change_client_infos(client_t *current_client, int cli_fd, server_t *s)
             current_client->name = NULL;
             return 24;
         } else {
-            write(cli_fd, "Client not log in so impossible to log out\n",
-                44);
+            send_unauthorized_to_client(cli_fd);
+            usleep(1000);
             return 84;
         }
     }
