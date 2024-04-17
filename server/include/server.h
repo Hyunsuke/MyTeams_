@@ -26,10 +26,24 @@
     #include "../../libs/myteams/logging_client.h"
     #include "../../libs/myteams/logging_server.h"
 
+typedef struct message {
+    char *sender_uuid; // Qui a envoyé le message? Moi ou César
+    time_t timestamp; // Time stamp
+    char *body; // Le contenu du message
+    struct message *next;
+} message_t;
+
+typedef struct send_to {
+    char *uuid; // Je chercher le uuid de César
+    struct message *content;
+    struct send_to *next;
+} send_to_t;
+
 typedef struct user {
     uuid_t uuid;
     int log;
     char *name;
+    send_to_t *send;
     struct user *next;
 } user_t;
 
@@ -136,6 +150,7 @@ int find_client(server_t *s, int client_fd,
     user_t *dest_user, client_t **dest_client);
 void receive_message(int client_fd, char *sender_uuid, char *message);
 void send_bad_uuid(int client_fd, char *uuid);
+// void add_message(user_t *user, time_t timestamp, char *body);
 
 // user/modif_send.c
 int find_sender(server_t *s, int client_fd, user_t **sender_user);
@@ -149,6 +164,12 @@ void display_users(server_t *s);
 
 //cmd_help.c
 void help_cmd(server_t *s, int client_fd);
+
+void add_message(message_t **head, char *uuid, char *message, time_t timestamp);
+message_t *create_message(char *uuid, char *message, time_t timestamp);
+send_to_t *find_send_by_uuid(send_to_t *head, char *uuid);
+void add_send(send_to_t **head, char *uuid);
+send_to_t *create_send(char *uuid);
 
 typedef struct {
     const char *command;
