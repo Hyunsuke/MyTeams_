@@ -59,7 +59,6 @@ void remove_client(client_t **head, int fd, server_t *s)
         prev->next = current->next;
     close(current->fd);
     FD_CLR(current->fd, &s->client_fds);
-    free(current);
 }
 
 void add_client(client_t **head, int fd)
