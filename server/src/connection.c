@@ -67,7 +67,7 @@ void handle_incoming_connection(server_t *s)
     while (!s->exitProgram) {
         read_fds = s->client_fds;
         if (select(max_fd + 1, &read_fds, NULL, NULL, NULL) == -1) {
-            perror("Erreur lors de l'utilisation de select");
+            printf("Erreur lors de l'utilisation de select");
             exit(EXIT_FAILURE);
         }
         if (FD_ISSET(s->server_fd, &read_fds)) {

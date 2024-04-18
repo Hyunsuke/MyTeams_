@@ -46,8 +46,8 @@ void send_timestamp_to_client(int client_fd, time_t timestamp)
     char *time_string = (char *)malloc(20 * sizeof(char));
 
     if (time_string == NULL) {
-        perror("Allocation failed");
-        exit(EXIT_FAILURE);
+        printf("Allocation failed");
+        return;
     }
     timeinfo = localtime(&timestamp);
     strftime(time_string, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
