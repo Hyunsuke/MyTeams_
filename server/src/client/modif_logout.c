@@ -12,7 +12,7 @@ void assign_name(client_t *current_client, server_t *s)
     int i = 0;
 
     s->name_logout =
-        malloc(sizeof(char) * (strlen(current_client->name) + 1));
+        my_malloc(sizeof(char) * (strlen(current_client->name) + 1));
     for (; current_client->name[i] != '\0'; i++)
         s->name_logout[i] = current_client->name[i];
     s->name_logout[i] = '\0';

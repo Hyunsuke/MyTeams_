@@ -14,6 +14,7 @@ SRC	=	src/main.c 				\
 		src/handle_message.c	\
 		src/handle_commands.c	\
 		src/my_str_to_word_array.c	\
+		src/garbage_collector.c	\
 		src/cmd/uuid.c	\
 		src/cmd/name.c	\
 		src/cmd/print.c	\

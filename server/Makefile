@@ -12,6 +12,7 @@ SRC	=	src/main.c 				\
 		src/handle_args.c 		\
 		src/server.c			\
 		src/config.c 			\
+		src/garbage_collector.c 			\
 		src/client/gestion_client_list.c \
 		src/client/modif_login.c \
 		src/client/modif_logout.c \

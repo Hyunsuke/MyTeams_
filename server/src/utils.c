@@ -38,9 +38,24 @@ bool check_quotes(const char *str)
 char *remove_quotes(const char *str)
 {
     int length = strlen(str);
-    char *new_str = malloc(length - 1);
+    char *new_str = my_malloc(length - 1);
 
     strncpy(new_str, str + 1, length - 2);
     new_str[length - 2] = '\0';
     return new_str;
+}
+
+char *my_strdup(const char *src)
+{
+    size_t length = 0;
+    char *dest = NULL;
+
+    if (src == NULL)
+        return NULL;
+    length = strlen(src);
+    dest = (char *)my_malloc((length + 1) * sizeof(char));
+    if (dest == NULL)
+        return NULL;
+    strcpy(dest, src);
+    return dest;
 }

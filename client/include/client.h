@@ -20,6 +20,7 @@
     #include <stdbool.h>
     #include "../../libs/myteams/logging_client.h"
     #include "../../libs/myteams/logging_server.h"
+    #include "garbage_collector.h"
 
 typedef struct client {
     char *name;

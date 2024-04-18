@@ -23,8 +23,10 @@
     #include <uuid/uuid.h>
     #include <unistd.h>
     #include "stdarg.h"
+    #include "signal.h"
     #include "../../libs/myteams/logging_client.h"
     #include "../../libs/myteams/logging_server.h"
+    #include "garbage_collector.h"
 
 typedef struct message {
     char *sender_uuid; // Qui a envoyé le message? Moi ou César
@@ -108,6 +110,7 @@ int number_back(char const *str, char separator);
 bool check_quotes(const char *str);
 char *remove_quotes(const char *str);
 int check_connection_client(client_t *current_client, int client_fd);
+char *my_strdup(const char *src);
 
 //handle_commands.c
 void handle_commands(server_t *s, int client_fd);

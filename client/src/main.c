@@ -9,7 +9,7 @@
 
 int main(int ac, char **av)
 {
-    client_t *client = malloc(sizeof(client_t));
+    client_t *client = my_malloc(sizeof(client_t));
 
     if (ac == 2 && (strcmp(av[1], "-help") == 0)) {
         printhelp();

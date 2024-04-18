@@ -9,10 +9,10 @@
 
 contact_t *create_contact(char *uuid)
 {
-    contact_t *new_contact = malloc(sizeof(contact_t));
+    contact_t *new_contact = my_malloc(sizeof(contact_t));
 
     if (new_contact != NULL) {
-        new_contact->uuid = strdup(uuid);
+        new_contact->uuid = my_strdup(uuid);
         new_contact->content = NULL;
         new_contact->next = NULL;
     }
@@ -56,10 +56,10 @@ contact_t *find_contact_by_uuid(contact_t *head, char *uuid)
 
 message_t *create_message(char *uuid, char *message, time_t timestamp)
 {
-    message_t *new_message = malloc(sizeof(message_t));
+    message_t *new_message = my_malloc(sizeof(message_t));
 
     if (new_message != NULL) {
-        new_message->sender_uuid = strdup(uuid);
+        new_message->sender_uuid = my_strdup(uuid);
         new_message->timestamp = timestamp;
         new_message->body = message;
         new_message->next = NULL;

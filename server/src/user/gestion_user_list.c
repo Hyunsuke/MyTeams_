@@ -9,12 +9,12 @@
 
 user_t *create_user(char *name)
 {
-    user_t *new_user = malloc(sizeof(user_t));
+    user_t *new_user = my_malloc(sizeof(user_t));
 
     if (new_user != NULL) {
         uuid_generate(new_user->uuid);
         new_user->log = 1;
-        new_user->name = strdup(name);
+        new_user->name = my_strdup(name);
         new_user->next = NULL;
     }
     return new_user;

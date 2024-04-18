@@ -29,7 +29,7 @@ void display_clients(server_t *s)
 
 client_t *create_client(int fd)
 {
-    client_t *new_client = malloc(sizeof(client_t));
+    client_t *new_client = my_malloc(sizeof(client_t));
 
     if (new_client != NULL) {
         new_client->fd = fd;
