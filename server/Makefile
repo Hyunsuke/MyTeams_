@@ -29,6 +29,7 @@ SRC	=	src/main.c 				\
 		src/cmd/cmd_user.c \
 		src/send_info/send_data.c \
 		src/send_info/send_cmd.c \
+		src/send_info/send_cmd_bis.c 	\
 		src/cmd/cmd_send.c 		\
 		src/cmd/cmd_messages.c 	\
 		src/user/modif_send.c 	\

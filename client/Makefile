@@ -20,6 +20,7 @@ SRC	=	src/main.c 				\
 		src/cmd/print_bis.c	\
 		src/cmd/status.c \
 		src/cmd/message.c \
+		src/cmd/time.c 		\
 
 OBJ	=	$(SRC:.c=.o)
 
