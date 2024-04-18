@@ -31,6 +31,7 @@ SRC	=	src/main.c 				\
 		src/send_info/send_cmd.c \
 		src/cmd/cmd_send.c 		\
 		src/cmd/cmd_messages.c 	\
+		src/cmd/cmd_create.c \
 		src/user/modif_send.c 	\
 		src/client/modif_send.c \
 		src/send_info/send_error.c \

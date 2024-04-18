@@ -26,10 +26,43 @@
     #include "../../libs/myteams/logging_client.h"
     #include "../../libs/myteams/logging_server.h"
 
+typedef struct reply {
+    time_t time;
+    char *body;
+    struct reply *next;
+} reply_t;
+
+typedef struct thread {
+    uuid_t uuid;
+    time_t time;
+    char *title;
+    char *body;
+    reply_t *reply;
+    struct thread *next;
+} thread_t;
+
+typedef struct channel {
+    uuid_t uuid;
+    char *name;
+    char *description;
+    thread_t *thread;
+    struct channel *next;
+} channel_t;
+
+typedef struct team {
+    uuid_t uuid;
+    char *name;
+    char *description;
+    channel_t *channel;
+    struct team *next;
+} team_t;
+
 typedef struct user {
     uuid_t uuid;
     int log;
     char *name;
+    char *context;
+    team_t *team;
     struct user *next;
 } user_t;
 
@@ -48,8 +81,11 @@ typedef struct server_s {
     fd_set client_fds;
     client_t *clients;
     user_t *users;
+    team_t *team;
     char **input_tab;
     char *name_logout;
+    char *name_login;
+    char uuid_elem[37];
     bool is_Ctrl_c;
 } server_t;
 
@@ -64,8 +100,7 @@ void remove_client(client_t **head, int fd, server_t *s);
 client_t *find_client_by_name(client_t *head, const char *name);
 
 //modif_login.c
-int update_client_name(client_t **head, int fd, char *name);
-void display_clients(server_t *s);
+int update_client(server_t *s, int client_fd);
 
 //gestion_user_list.c
 void add_user(user_t **head, char *name);
@@ -75,7 +110,8 @@ user_t *find_user_by_fd(client_t *head_client,
     user_t *head_user, int client_fd);
 
 //modif_login.c
-void update_user(user_t **head, client_t **head_client, int fd, char *name);
+void update_user_not_exiting(server_t *s);
+int update_user_existing(server_t *s);
 
 // list.c
 void init_list(server_t *s);
@@ -113,6 +149,9 @@ void users_cmd(server_t *s, int client_fd);
 
 //cmd_user.c
 void user_cmd(server_t *s, int client_fd);
+
+//cmd_create.c
+void create_cmd(server_t *s, int client_fd);
 
 //send_infos.c
 void send_uuid_to_client(int client_fd, char *uuid_str);

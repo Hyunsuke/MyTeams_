@@ -10,11 +10,15 @@
 user_t *create_user(char *name)
 {
     user_t *new_user = malloc(sizeof(user_t));
+    char uuid_str[37];
 
     if (new_user != NULL) {
         uuid_generate(new_user->uuid);
+        uuid_unparse(new_user->uuid, uuid_str);
         new_user->log = 1;
         new_user->name = strdup(name);
+        new_user->context = strdup(uuid_str);
+        new_user->team = NULL;
         new_user->next = NULL;
     }
     return new_user;

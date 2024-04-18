@@ -7,15 +7,32 @@
 
 #include "server.h"
 
+void close_client(server_t *s, client_t *current_client, int cli_fd)
+{
+    client_t **temp_head = &s->clients;
+
+    if (current_client->fd == cli_fd) {
+        remove_client(temp_head, cli_fd, s);
+    }
+}
+
 void check_client_down(user_t *current_user, server_t *s, int cli_fd,
     char *uuid_str)
 {
-    if (s->is_Ctrl_c == false) {
-        send_uuid_to_client(cli_fd, uuid_str);
-        usleep(1000);
-        send_name_to_client(cli_fd, current_user->name);
-        usleep(1000);
-        send_logged_out_to_client(cli_fd);
+    client_t **client_head = &s->clients;
+    client_t *current_client = *client_head;
+
+    while (current_client != NULL) {
+        if (s->is_Ctrl_c == false) {
+            send_uuid_to_client(current_client->fd, uuid_str);
+            usleep(1000);
+            send_name_to_client(current_client->fd, current_user->name);
+            usleep(1000);
+            send_logged_out_to_client(current_client->fd);
+            usleep(1000);
+            close_client(s, current_client, cli_fd);
+        }
+        current_client = current_client->next;
     }
 }
 

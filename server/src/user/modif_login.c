@@ -7,71 +7,86 @@
 
 #include "server.h"
 
-user_t *right_place(user_t *new_current, char *name)
+int check_user_existence(server_t *s, user_t *current_user,
+    client_t *new_current_client)
 {
-    while (new_current != NULL) {
-        if (strcmp(new_current->name, name) == 0)
-            break;
-        new_current = new_current->next;
-    }
-    return new_current;
-}
+    char uuid[37];
 
-void update_cli(user_t **head, client_t **head_client, int cli_fd, char *name)
-{
-    user_t *new_current;
-    char uuid_str[37];
-
-    if (update_client_name(head_client, cli_fd, name) != 84) {
-        add_user(head, name);
-        new_current = *head;
-        new_current = right_place(new_current, name);
-        uuid_unparse(new_current->uuid, uuid_str);
-        send_uuid_to_client(cli_fd, uuid_str);
-        usleep(1000);
-        send_name_to_client(cli_fd, new_current->name);
-        usleep(1000);
-        send_logged_in_to_client(cli_fd);
-        server_event_user_created(uuid_str, new_current->name);
-        server_event_user_logged_in(uuid_str);
-    }
-}
-
-void check_alrlog(user_t *current, client_t **head_client, int cli_fd,
-    char *name)
-{
-    char uuid_str[37];
-
-    if (update_client_name(head_client, cli_fd, name) != 84) {
-        current->log += 1;
-        uuid_unparse(current->uuid, uuid_str);
-        server_event_user_logged_in(uuid_str);
-        send_uuid_to_client(cli_fd, uuid_str);
-        usleep(1000);
-        send_name_to_client(cli_fd, current->name);
-        usleep(1000);
-        send_logged_in_to_client(cli_fd);
-    }
-}
-
-int update_user_alrexist(user_t *current, client_t **head_client, int cli_fd,
-    char *name)
-{
-    if (strcmp(current->name, name) == 0) {
-        check_alrlog(current, head_client, cli_fd, name);
+    if (strcmp(current_user->name, s->name_login) == 0) {
+        current_user->log += 1;
+        uuid_unparse(current_user->uuid, uuid);
+        while (new_current_client != NULL) {
+            if (new_current_client->name != NULL) {
+                send_uuid_to_client(new_current_client->fd, uuid);
+                usleep(1000);
+                send_name_to_client(new_current_client->fd, current_user->name);
+                usleep(1000);
+                send_logged_in_to_client(new_current_client->fd);
+                usleep(1000);
+            }
+            new_current_client = new_current_client->next;
+        }
+        server_event_user_logged_in(uuid);
         return 84;
     }
     return 0;
 }
 
-void update_user(user_t **head, client_t **head_client, int cli_fd, char *name)
+int update_user_existing(server_t *s)
 {
-    user_t *current = *head;
+    client_t **new_client_head = &s->clients;
+    client_t *new_current_client = *new_client_head;
+    user_t **user_head = &s->users;
+    user_t *current_user = *user_head;
 
-    while (current != NULL) {
-        if (update_user_alrexist(current, head_client, cli_fd, name) == 84)
-            return;
-        current = current->next;
+    while (current_user != NULL) {
+        if (check_user_existence(s, current_user, new_current_client) == 84) {
+            return 84;
+        }
+        current_user = current_user->next;
     }
-    update_cli(head, head_client, cli_fd, name);
+    return 0;
+}
+
+int check_position_user(server_t *s, client_t *new_current_client,
+    user_t *new_current_user)
+{
+    char uuid[37];
+
+    if (strcmp(new_current_user->name, s->name_login) == 0) {
+        uuid_unparse(new_current_user->uuid, uuid);
+        while (new_current_client != NULL) {
+            if (new_current_client->name != NULL) {
+                send_uuid_to_client(new_current_client->fd, uuid);
+                usleep(1000);
+                send_name_to_client(new_current_client->fd, new_current_user->name);
+                usleep(1000);
+                send_logged_in_to_client(new_current_client->fd);
+                usleep(1000);
+            }
+            new_current_client = new_current_client->next;
+        }
+        server_event_user_created(uuid, new_current_user->name);
+        server_event_user_logged_in(uuid);
+        return 84;
+    }
+    return 0;
+}
+
+void update_user_not_exiting(server_t *s)
+{
+    client_t **new_client_head = &s->clients;
+    client_t *new_current_client = *new_client_head;
+    user_t **new_user_head = &s->users;
+    user_t *new_current_user;
+
+    add_user(new_user_head, s->name_login);
+    new_current_user = *new_user_head;
+    while (new_current_user != NULL) {
+        if (check_position_user(s, new_current_client,
+            new_current_user) == 84) {
+            return;
+        }
+        new_current_user = new_current_user->next;
+    }
 }
