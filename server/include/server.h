@@ -22,6 +22,7 @@
     #include <arpa/inet.h>
     #include <uuid/uuid.h>
     #include <unistd.h>
+    #include <time.h>
     #include "stdarg.h"
     #include "signal.h"
     #include "../../libs/myteams/logging_client.h"
@@ -143,6 +144,8 @@ void send_users_to_client(int client_fd);
 void send_unauthorized_to_client(int client_fd);
 void send_user_to_client(int client_fd);
 void send_unknown_user_to_client(int client_fd);
+void send_message_list_to_client(int client_fd);
+void send_timestamp_to_client(int client_fd, time_t timestamp);
 
 // cmd_send.c
 void send_cmd(server_t *s, int client_fd);

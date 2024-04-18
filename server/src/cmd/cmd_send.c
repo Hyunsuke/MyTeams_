@@ -87,7 +87,8 @@ void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
         return;
     uuid_unparse(sender_user->uuid, sender_uuid_str);
     snd_contact(&contact, dest_user, sender_uuid_str);
-    add_message(&contact->content, dest_uuid, msg, current_time);
+    add_message(&contact->content, sender_uuid_str, msg, current_time);
+
     send_private_message(sender_user, dest_uuid, msg, dest_client);
     dupli_cntact(&from_contact, sender_user, dest_uuid);
     add_message(&from_contact->content, sender_uuid_str, msg, current_time);
