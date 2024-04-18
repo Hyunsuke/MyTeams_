@@ -11,6 +11,7 @@ void signal_handler(int signal)
 {
     (void) signal;
     my_free_all();
+    exit(0);
 }
 
 int main(int ac, char **av)
