@@ -50,6 +50,8 @@ void send_timestamp_to_client(int client_fd, time_t timestamp)
         return;
     }
     timeinfo = localtime(&timestamp);
+    timeinfo->tm_hour -= 1;
+    mktime(timeinfo);
     strftime(time_string, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
     strcat(buffer, time_string);
     send(client_fd, buffer, strlen(buffer), 0);
