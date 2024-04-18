@@ -138,7 +138,7 @@ void add_team(server_t *s, int client_fd)
     char uuid_str[37];
 
     if (check_team(s, name) == 84) {
-        write(client_fd, "Team already exist\n", 21);
+        write(client_fd, "Team already exist\n", 20);
         //  send au client 
         //  int client_error_already_exist(void);
         return;
@@ -234,7 +234,7 @@ void add_channel(server_t *s, int client_fd)
     char uuid[37];
 
     if (check_channel(s, name, parse_context) == 84) {
-        write(client_fd, "Channel already exist\n", 21);
+        write(client_fd, "Channel already exist\n", 23);
         //  send au client 
         //  int client_error_already_exist(void);
         return;
