@@ -12,6 +12,7 @@ SRC	=	src/main.c 				\
 		src/handle_args.c 		\
 		src/server.c			\
 		src/config.c 			\
+		src/my_strcat.c 			\
 		src/client/gestion_client_list.c \
 		src/client/modif_login.c \
 		src/client/modif_logout.c \
@@ -36,6 +37,7 @@ SRC	=	src/main.c 				\
 		src/client/modif_send.c \
 		src/send_info/send_error.c \
 		src/cmd/cmd_help.c \
+		src/cmd/cmd_use.c \
 
 
 OBJ	=	$(SRC:.c=.o)

@@ -189,6 +189,12 @@ void display_users(server_t *s);
 //cmd_help.c
 void help_cmd(server_t *s, int client_fd);
 
+//cmd_use.c
+void use_cmd(server_t *s, int client_fd);
+
+//my_strcat.c
+char *my_strcat(const char *str1, const char *str2);
+
 typedef struct {
     const char *command;
     void (*handler)(server_t *, int);

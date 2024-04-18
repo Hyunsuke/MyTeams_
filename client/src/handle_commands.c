@@ -31,7 +31,7 @@ void process_command(client_t *c, char *first_inp, char **commands, char *buf)
             return;
         }
     }
-    printf("%s", buf);
+    write(1, buf, strlen(buf));
 }
 
 void handle_commands(client_t *c, char **commands, char *buffer)
