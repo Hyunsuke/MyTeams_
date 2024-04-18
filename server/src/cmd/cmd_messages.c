@@ -25,40 +25,35 @@ int handle_messages_intputs(server_t *s)
     return 0;
 }
 
-void messages_cmd(server_t *s, int client_fd)
+void give_message_linked_list_to_client(contact_t *current, int client_fd)
 {
-    char *dest_uuid;
-    // user_t *user;
-    user_t *sender_user;
-    message_t *current_message;
-    send_to_t *current_send;
+    message_t *current_message = current->content;
 
-    if (handle_messages_intputs(s) == 84)
-        return;
-    dest_uuid = remove_quotes(s->input_tab[1]);
-    write(1, "b", 1);
-    if (find_sender(s, client_fd, &sender_user) == 84)
-        return;
-    write(1, "c", 1);
-    if (sender_user == NULL) {
-        write(client_fd, "User not found\n", strlen("User not found\n"));
-        return;
-    }
-    write(1, "d", 1);
-    printf("%s\n", sender_user->send->uuid);
-    current_send = find_send_by_uuid(sender_user->send, dest_uuid);
-    if (current_send == NULL) {
-        write(1, "NUll", 4);
-        return;
-    }
-    write(1, "e", 1);
-    current_message = current_send->content;
-    write(1, "f", 1);
     while (current_message != NULL) {
-        write(1, "a", 1);
-        //send toutes les infos
         dprintf(client_fd, "%s\n", current_message->body);
         current_message = current_message->next;
     }
 }
 
+void messages_cmd(server_t *s, int client_fd)
+{
+    char *dest_uuid;
+    user_t *sender_user = s->users;
+    contact_t *current_contact = s->users->contact;
+
+    if (handle_messages_intputs(s) == 84)
+        return;
+    dest_uuid = remove_quotes(s->input_tab[1]);
+    if (find_sender(s, client_fd, &sender_user) == 84)
+        return;
+    if (sender_user == NULL) {
+        write(client_fd, "User not found\n", strlen("User not found\n"));
+        return;
+    }
+    current_contact = find_contact_by_uuid(sender_user->contact, dest_uuid);
+    if (current_contact == NULL) {
+        write(client_fd, "No existing discussion with the selected uuid", 45);
+        return;
+    }
+    give_message_linked_list_to_client(current_contact, client_fd);
+}

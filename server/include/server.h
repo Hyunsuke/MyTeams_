@@ -33,17 +33,17 @@ typedef struct message {
     struct message *next;
 } message_t;
 
-typedef struct send_to {
+typedef struct contact {
     char *uuid; // Je chercher le uuid de César
     struct message *content;
-    struct send_to *next;
-} send_to_t;
+    struct contact *next;
+} contact_t;
 
 typedef struct user {
     uuid_t uuid;
     int log;
     char *name;
-    send_to_t *send;
+    contact_t *contact;
     struct user *next;
 } user_t;
 
@@ -165,11 +165,12 @@ void display_users(server_t *s);
 //cmd_help.c
 void help_cmd(server_t *s, int client_fd);
 
-void add_message(message_t **head, char *uuid, char *message, time_t timestamp);
+//gestion_contact_list.c
+void add_message(message_t **head, char *uuid, char *msg, time_t timestamp);
 message_t *create_message(char *uuid, char *message, time_t timestamp);
-send_to_t *find_send_by_uuid(send_to_t *head, char *uuid);
-void add_send(send_to_t **head, char *uuid);
-send_to_t *create_send(char *uuid);
+contact_t *find_contact_by_uuid(contact_t *head, char *uuid);
+void add_contact(contact_t **head, char *uuid);
+contact_t *create_contact(char *uuid);
 
 typedef struct {
     const char *command;
