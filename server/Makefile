@@ -38,6 +38,11 @@ SRC	=	src/main.c 				\
 		src/send_info/send_error.c \
 		src/cmd/cmd_help.c \
 		src/cmd/cmd_use.c \
+		src/cmd/cmd_subscribe.c \
+		src/team/gestion_team.c \
+		src/thread/gestion_thread.c \
+		src/channel/gestion_channel.c \
+		src/reply/gestion_reply.c \
 
 
 OBJ	=	$(SRC:.c=.o)

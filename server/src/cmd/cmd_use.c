@@ -52,7 +52,7 @@ int check_use_error(client_t *current, int client_fd, int args, server_t *s)
         return 84;
     }
     args = get_args_number(s->input_tab);
-    if (args < 2 || args > 4) {
+    if (args < 1 || args > 4) {
         write(client_fd, "Wrong number of arguments\n", 26);
         usleep(100);
         return 84;
@@ -64,7 +64,6 @@ void use_cmd(server_t *s, int client_fd)
 {
     client_t *current_client = get_client(&s->clients, client_fd);
     user_t *current_user;
-    char uuid[37];
     int args = 0;
 
     args = check_use_error(current_client, client_fd, args, s);

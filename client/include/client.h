@@ -27,6 +27,29 @@ typedef struct client {
     char *message;
     bool log;
     int status;
+
+    //thread
+    char *thread_uuid;
+    time_t thread_timestamp;
+    char *thread_title;
+    char *thread_body;
+
+    //user
+    char *user_uuid;
+
+    //reply
+    char *reply_body;
+    time_t reply_timestamp;
+
+    //team
+    char *team_uuid;
+    char *team_name;
+    char *team_description;
+
+    //Channel
+    char *channel_uuid;
+    char *channel_name;
+    char *channel_description;
 } client_t;
 
 void printhelp(void);
@@ -57,9 +80,41 @@ void print_unauthorized(client_t *client, char **commands);
 void print_unknown_user(client_t *client, char **commands);
 void print_user(client_t *client, char **commands);
 void print_help(client_t *c, char **commands);
+void print_unknown_team(client_t *client, char **commands);
+void print_unknown_channel(client_t *client, char **commands);
+void print_unknown_thread(client_t *client, char **commands);
+
+// Thread
+void set_thread_uuid(client_t *client, char **commands);
+void set_thread_timestamp(client_t *client, char **commands);
+void set_thread_title(client_t *client, char **commands);
+void set_thread_body(client_t *client, char **commands);
+
+// User
+void set_user_uuid(client_t *client, char **commands);
+
+// Reply
+void set_reply_body(client_t *client, char **commands);
+void set_reply_timestamp(client_t *client, char **commands);
+
+// Team
+void set_team_uuid(client_t *client, char **commands);
+void set_team_name(client_t *client, char **commands);
+void set_team_description(client_t *client, char **commands);
+
+// Channel
+void set_channel_uuid(client_t *client, char **commands);
+void set_channel_name(client_t *client, char **commands);
+void set_channel_description(client_t *client, char **commands);
+
+void print_reply_received(client_t *client, char **commands);
+void print_reply_created(client_t *client, char **commands);
 
 //my_str_to_word_array.c
 char **my_str_to_word_array(char const *str, char separator);
+
+char *strptime(const char *restrict s, const char *restrict format,
+    struct tm *restrict tm);
 
 typedef struct {
     const char *command;

@@ -24,7 +24,6 @@ int change_client_infos(client_t *current_client, int cli_fd, server_t *s)
         if (current_client->name != NULL) {
             assign_name(current_client, s);
             current_client->log = false;
-            free(current_client->name);
             current_client->name = NULL;
             return 24;
         } else {

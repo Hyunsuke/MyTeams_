@@ -49,22 +49,22 @@ typedef struct channel {
     struct channel *next;
 } channel_t;
 
-typedef struct team {
-    uuid_t uuid;
-    char *name;
-    char *description;
-    channel_t *channel;
-    struct team *next;
-} team_t;
-
 typedef struct user {
     uuid_t uuid;
     int log;
     char *name;
     char *context;
-    team_t *team;
     struct user *next;
 } user_t;
+
+typedef struct team {
+    uuid_t uuid;
+    char *name;
+    char *description;
+    user_t *user;
+    channel_t *channel;
+    struct team *next;
+} team_t;
 
 typedef struct client {
     int fd;
@@ -85,7 +85,14 @@ typedef struct server_s {
     char **input_tab;
     char *name_logout;
     char *name_login;
-    char uuid_elem[37];
+    char *id_team;
+    char *thread_title;
+    char *thread_body;
+    char *reply_body;
+    char uuid_team[37];
+    char uuid_channel[37];
+    char uuid_thread[37];
+    char **parse_context;
     bool is_Ctrl_c;
 } server_t;
 
@@ -152,6 +159,7 @@ void user_cmd(server_t *s, int client_fd);
 
 //cmd_create.c
 void create_cmd(server_t *s, int client_fd);
+char **define_context(server_t *s, int client_fd);
 
 //send_infos.c
 void send_uuid_to_client(int client_fd, char *uuid_str);
@@ -194,6 +202,27 @@ void use_cmd(server_t *s, int client_fd);
 
 //my_strcat.c
 char *my_strcat(const char *str1, const char *str2);
+
+//gestion_team.c
+void add_team(server_t *s, int client_fd);
+char *get_user_uuid(server_t *s, int client_fd);
+
+//gestion_thread.C
+void add_thread(server_t *s, int client_fd);
+
+//getsion_channel.c
+void add_channel(server_t *s, int client_fd);
+
+//gestion_reply.c
+void add_reply(server_t *s, int client_fd);
+
+//cmd_subscribe.c
+void subscribe_cmd(server_t *s, int client_fd);
+
+//time_conversion_function
+char *time_t_to_string(time_t timestamp);
+
+int check_subscribe(team_t *current_team, server_t *s, int client_fd);
 
 typedef struct {
     const char *command;

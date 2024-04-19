@@ -13,6 +13,18 @@ void print_unknown_user(client_t *client, char **commands)
     client_error_unknown_user(client->uuid_str);
 }
 
+void print_unknown_team(client_t *client, char **commands)
+{
+    (void)client;
+    client_error_unknown_team(commands[1]);
+}
+
+void print_unknown_channel(client_t *client, char **commands)
+{
+    (void)client;
+    client_error_unknown_channel(commands[1]);
+}
+
 void print_user(client_t *client, char **commands)
 {
     (void)commands;

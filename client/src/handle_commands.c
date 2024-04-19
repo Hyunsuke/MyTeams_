@@ -7,6 +7,141 @@
 
 #include "client.h"
 
+time_t get_time_from_string(const char *time_string)
+{
+    struct tm tm;
+    time_t timestamp;
+
+    memset(&tm, 0, sizeof(struct tm));
+    if (strptime(time_string, "%Y-%m-%d %H:%M:%S", &tm) == NULL)
+        return (time_t)-1;
+    tm.tm_hour -= 1;
+    if (tm.tm_hour < 0) {
+        tm.tm_hour += 24;
+        tm.tm_mday -= 1;
+    }
+    timestamp = mktime(&tm);
+    if (timestamp == -1)
+        return (time_t)-1;
+    return timestamp;
+}
+
+// Thread
+void set_thread_uuid(client_t *client, char **commands)
+{
+    client->thread_uuid = commands[1];
+}
+
+void set_thread_timestamp(client_t *client, char **commands)
+{
+    (void)client;
+    client->thread_timestamp = get_time_from_string(commands[1]);
+}
+
+void set_thread_title(client_t *client, char **commands)
+{
+    client->thread_title = commands[1];
+}
+
+void set_thread_body(client_t *client, char **commands)
+{
+    client->thread_body = commands[1];
+}
+
+// User
+void set_user_uuid(client_t *client, char **commands)
+{
+    client->user_uuid = commands[1];
+}
+
+// Reply
+void set_reply_body(client_t *client, char **commands)
+{
+    client->reply_body = commands[1];
+}
+
+void set_reply_timestamp(client_t *client, char **commands)
+{
+    (void)client;
+    client->reply_timestamp = get_time_from_string(commands[1]);;
+}
+
+// Print
+void print_reply_received(client_t *client, char **commands)
+{
+    (void)commands;
+    client_event_thread_reply_received(client->team_uuid, client->thread_uuid,
+        client->user_uuid, client->reply_body);
+}
+
+void print_reply_created(client_t *client, char **commands)
+{
+    (void)commands;
+    (void)client;
+    client_print_reply_created(client->thread_uuid, client->user_uuid,
+        client->reply_timestamp, client->reply_body);
+}
+
+void print_thread_created(client_t *client, char **commands)
+{
+    (void)commands;
+    client_print_thread_created(client->thread_uuid, client->user_uuid,
+    client->thread_timestamp, client->thread_title, client->thread_body);
+}
+
+void print_channel_created(client_t *client, char **commands)
+{
+    (void)commands;
+    client_print_channel_created(client->channel_uuid, client->channel_name,
+    client->channel_description);
+}
+
+void print_team_created(client_t *client, char **commands)
+{
+    (void)commands;
+    client_print_team_created(client->team_uuid, client->team_name,
+    client->team_description);
+}
+
+// Team
+void set_team_uuid(client_t *client, char **commands)
+{
+    client->team_uuid = commands[1];
+}
+
+void set_team_name(client_t *client, char **commands)
+{
+    client->team_name = commands[1];
+}
+
+void set_team_description(client_t *client, char **commands)
+{
+    client->team_description = commands[1];
+}
+
+// Channel
+void set_channel_uuid(client_t *client, char **commands)
+{
+    client->channel_uuid = commands[1];
+}
+
+void set_channel_name(client_t *client, char **commands)
+{
+    client->channel_name = commands[1];
+}
+
+void set_channel_description(client_t *client, char **commands)
+{
+    client->channel_description = commands[1];
+}
+
+void print_client_already_exist(client_t *client, char **commands)
+{
+    (void)client;
+    (void)commands;
+    client_error_already_exist();
+}
+
 command_handler_t commandHandlers[] = {
     {"UUID", set_uuid},
     {"NAME", set_name},
@@ -20,6 +155,28 @@ command_handler_t commandHandlers[] = {
     {"UNKNOWNUSER", print_unknown_user},
     {"ONEUSER", print_user},
     {"HELP", print_help},
+    {"UNKNOWN_TEAM", print_unknown_team},
+    {"UNKNOWN_CHANNEL", print_unknown_channel},
+    {"UNKNOWN_THREAD", print_unknown_thread},
+    {"THREAD_UUID", set_thread_uuid},
+    {"THREAD_TITLE", set_thread_title},
+    {"THREAD_BODY", set_thread_body},
+    {"THREAD_TIMESTAMP", set_thread_timestamp},
+    {"USER_UUID", set_user_uuid},
+    {"REPLY_BODY", set_reply_body},
+    {"REPLY_TIMESTAMP", set_reply_timestamp},
+    {"TEAM_UUID", set_team_uuid},
+    {"TEAM_NAME", set_team_name},
+    {"TEAM_DESCRIPTION", set_team_description},
+    {"CHANNEL_UUID", set_channel_uuid},
+    {"CHANNEL_NAME", set_channel_name},
+    {"CHANNEL_DESCRIPTION", set_channel_description},
+    {"PRINT_REPLY_RECEIVED", print_reply_received},
+    {"PRINT_REPLY_CREATED", print_reply_created},
+    {"PRINT_THREAD_CREATED", print_thread_created},
+    {"PRINT_CHANNEL_CREATED", print_channel_created},
+    {"PRINT_TEAM_CREATED", print_team_created},
+    {"PRINT_CLIENT_EXIST", print_client_already_exist},
     {NULL, NULL}
 };
 

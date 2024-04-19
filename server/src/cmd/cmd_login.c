@@ -9,7 +9,6 @@
 
 void update_log(server_t *s, int client_fd)
 {
-
     if (update_client(s, client_fd) == 84) {
         return;
     }

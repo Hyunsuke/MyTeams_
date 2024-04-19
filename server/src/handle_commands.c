@@ -17,6 +17,7 @@ command_handler_t commandHandlers[] = {
     {"/help", help_cmd},
     {"/create", create_cmd},
     {"/use", use_cmd},
+    {"/subscribe", subscribe_cmd},
     {NULL, NULL}
 };
 

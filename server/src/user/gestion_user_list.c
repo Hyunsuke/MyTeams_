@@ -18,7 +18,6 @@ user_t *create_user(char *name)
         new_user->log = 1;
         new_user->name = strdup(name);
         new_user->context = strdup(uuid_str);
-        new_user->team = NULL;
         new_user->next = NULL;
     }
     return new_user;

@@ -7,6 +7,19 @@
 
 #include "server.h"
 
+void send_from_user_existence(user_t *current_user,
+    client_t *new_current_client, char *uuid)
+{
+    if (new_current_client->name != NULL) {
+        send_uuid_to_client(new_current_client->fd, uuid);
+        usleep(1000);
+        send_name_to_client(new_current_client->fd, current_user->name);
+        usleep(1000);
+        send_logged_in_to_client(new_current_client->fd);
+        usleep(1000);
+    }
+}
+
 int check_user_existence(server_t *s, user_t *current_user,
     client_t *new_current_client)
 {
@@ -16,14 +29,7 @@ int check_user_existence(server_t *s, user_t *current_user,
         current_user->log += 1;
         uuid_unparse(current_user->uuid, uuid);
         while (new_current_client != NULL) {
-            if (new_current_client->name != NULL) {
-                send_uuid_to_client(new_current_client->fd, uuid);
-                usleep(1000);
-                send_name_to_client(new_current_client->fd, current_user->name);
-                usleep(1000);
-                send_logged_in_to_client(new_current_client->fd);
-                usleep(1000);
-            }
+            send_from_user_existence(current_user, new_current_client, uuid);
             new_current_client = new_current_client->next;
         }
         server_event_user_logged_in(uuid);
@@ -48,6 +54,19 @@ int update_user_existing(server_t *s)
     return 0;
 }
 
+static void send_from_check_pos(user_t *new_current_user,
+    client_t *new_current_client, char *uuid)
+{
+    if (new_current_client->name != NULL) {
+        send_uuid_to_client(new_current_client->fd, uuid);
+        usleep(1000);
+        send_name_to_client(new_current_client->fd, new_current_user->name);
+        usleep(1000);
+        send_logged_in_to_client(new_current_client->fd);
+        usleep(1000);
+    }
+}
+
 int check_position_user(server_t *s, client_t *new_current_client,
     user_t *new_current_user)
 {
@@ -56,14 +75,7 @@ int check_position_user(server_t *s, client_t *new_current_client,
     if (strcmp(new_current_user->name, s->name_login) == 0) {
         uuid_unparse(new_current_user->uuid, uuid);
         while (new_current_client != NULL) {
-            if (new_current_client->name != NULL) {
-                send_uuid_to_client(new_current_client->fd, uuid);
-                usleep(1000);
-                send_name_to_client(new_current_client->fd, new_current_user->name);
-                usleep(1000);
-                send_logged_in_to_client(new_current_client->fd);
-                usleep(1000);
-            }
+            send_from_check_pos(new_current_user, new_current_client, uuid);
             new_current_client = new_current_client->next;
         }
         server_event_user_created(uuid, new_current_user->name);
