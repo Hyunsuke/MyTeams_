@@ -15,13 +15,13 @@ void send_user_infos(user_t *current_user, int client_fd)
     log = (current_user->log <= 0) ? "false" : "true";
     uuid_unparse(current_user->uuid, uuid_str);
     send_uuid_to_client(client_fd, uuid_str);
-    usleep(1000);
+    usleep(10000);
     send_name_to_client(client_fd, current_user->name);
-    usleep(1000);
+    usleep(10000);
     send_status_to_client(client_fd, log);
-    usleep(1000);
+    usleep(10000);
     send_users_to_client(client_fd);
-    usleep(1000);
+    usleep(10000);
 }
 
 void send_user_list(user_t **user_head, client_t **client_head, int client_fd)
@@ -31,7 +31,7 @@ void send_user_list(user_t **user_head, client_t **client_head, int client_fd)
 
     if (check_connection_client(current_client, client_fd) == 84) {
         send_unauthorized_to_client(client_fd);
-        usleep(1000);
+        usleep(10000);
         return;
     }
     if (current_user == NULL) {

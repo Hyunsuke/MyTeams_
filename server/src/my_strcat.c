@@ -17,7 +17,7 @@ char *my_strcat(const char *str1, const char *str2)
         return NULL;
     length1 = strlen(str1);
     length2 = strlen(str2);
-    result = malloc((length1 + length2 + 1) * sizeof(char));
+    result = my_malloc((length1 + length2 + 1) * sizeof(char));
     if (result == NULL)
         return NULL;
     strcpy(result, str1);

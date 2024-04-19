@@ -45,7 +45,7 @@ void send_reply_created(server_t *s, int client_fd, time_t time_reply)
 reply_t *create_reply(server_t *s, int client_fd)
 {
     (void)client_fd;
-    reply_t *new_reply = malloc(sizeof(reply_t));
+    reply_t *new_reply = my_malloc(sizeof(reply_t));
 
     if (new_reply != NULL) {
         new_reply->body = s->reply_body;

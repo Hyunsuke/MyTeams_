@@ -41,7 +41,7 @@ int find_end_of_word(char const *str, char separator)
 char *copy_word(char const *str, int start_index, int end_index)
 {
     int word_length = end_index - start_index;
-    char *word = malloc(sizeof(char) * (word_length + 1));
+    char *word = my_malloc(sizeof(char) * (word_length + 1));
 
     for (int i = 0; i < word_length; i++)
         word[i] = str[start_index + i];
@@ -52,7 +52,7 @@ char *copy_word(char const *str, int start_index, int end_index)
 char **my_str_to_word_array(char const *str, char separator)
 {
     int scale_y = number_back(str, separator);
-    char **generator = malloc(sizeof(char *) * (scale_y + 1));
+    char **generator = my_malloc(sizeof(char *) * (scale_y + 1));
     int index = 0;
     int start_index = 0;
     int end_index = 0;

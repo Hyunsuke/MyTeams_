@@ -37,3 +37,12 @@ void print_help(client_t *c, char **commands)
     (void)commands;
     printhelp();
 }
+
+void print_messages(client_t *c, char **commands)
+{
+    (void)commands;
+    client_private_message_print_messages(
+        c->uuid_str,
+        c->timestamp,
+        c->message);
+}

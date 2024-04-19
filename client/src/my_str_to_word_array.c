@@ -6,33 +6,25 @@
 */
 #include "client.h"
 
-int number_back(const char *str, char separator)
+int number_back(char const *str, char separator)
 {
-    int count = 0;
-    int inside_quotes = 0;
-
     for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] == '"') {
-            inside_quotes = !inside_quotes;
-            continue;
-        }
-        if (str[i] == separator && !inside_quotes) {
-            count++;
+        if (str[i] == separator) {
+            return 2;
         }
     }
-    return count + 1;
+    return 1;
 }
 
-void copy_to_string(char *remaining, int space, char **gen, char const *str)
+char *copy_word(char const *str, int start_index, int end_index)
 {
-    char *trimmed_str = remaining + 1;
+    int word_length = end_index - start_index;
+    char *word = malloc(sizeof(char) * (word_length + 1));
 
-    gen[0] = malloc(sizeof(char) * (space + 1));
-    for (int j = 0; j < space; j++)
-        gen[0][j] = str[j];
-    gen[0][space] = '\0';
-    gen[1] = trimmed_str;
-    gen[2] = NULL;
+    for (int i = 0; i < word_length; i++)
+        word[i] = str[start_index + i];
+    word[word_length] = '\0';
+    return word;
 }
 
 char **my_str_to_word_array(char const *str, char separator)
@@ -40,20 +32,16 @@ char **my_str_to_word_array(char const *str, char separator)
     int scale_y = number_back(str, separator);
     char **generator = malloc(sizeof(char *) * (scale_y + 1));
     int first_space_index = 0;
-    int remaining_length = 0;
-    char *remaining_str = NULL;
-    int i = 0;
 
     while (str[first_space_index] != ' ' && str[first_space_index] != '\0')
         first_space_index++;
-    while (str[first_space_index + remaining_length] != '\0')
-        remaining_length++;
-    remaining_str = malloc(sizeof(char) * (remaining_length + 1));
-    while (str[first_space_index + i] != '\0') {
-        remaining_str[i] = str[first_space_index + i];
-        i++;
+    if (str[first_space_index] == '\0') {
+        generator[0] = copy_word(str, 0, first_space_index);
+        generator[1] = NULL;
+        return generator;
     }
-    remaining_str[i] = '\0';
-    copy_to_string(remaining_str, first_space_index, generator, str);
+    generator[0] = copy_word(str, 0, first_space_index);
+    generator[1] = copy_word(str, first_space_index + 1, strlen(str));
+    generator[2] = NULL;
     return generator;
 }

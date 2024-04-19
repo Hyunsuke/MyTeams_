@@ -22,7 +22,7 @@ void send_channel_created(server_t *s, int client_fd, char *name, char *desc)
 channel_t *create_channel(server_t *s, int client_fd, char *name,
     char *description)
 {
-    channel_t *new_channel = malloc(sizeof(channel_t));
+    channel_t *new_channel = my_malloc(sizeof(channel_t));
 
     (void)client_fd;
     if (new_channel != NULL) {

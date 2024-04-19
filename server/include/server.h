@@ -22,9 +22,25 @@
     #include <arpa/inet.h>
     #include <uuid/uuid.h>
     #include <unistd.h>
+    #include <time.h>
     #include "stdarg.h"
+    #include "signal.h"
     #include "../../libs/myteams/logging_client.h"
     #include "../../libs/myteams/logging_server.h"
+    #include "garbage_collector.h"
+
+typedef struct message {
+    char *sender_uuid; // Qui a envoyé le message? Moi ou César
+    time_t timestamp; // Time stamp
+    char *body; // Le contenu du message
+    struct message *next;
+} message_t;
+
+typedef struct contact {
+    char *uuid; // Je chercher le uuid de César
+    struct message *content;
+    struct contact *next;
+} contact_t;
 
 typedef struct reply {
     time_t time;
@@ -54,6 +70,7 @@ typedef struct user {
     int log;
     char *name;
     char *context;
+    contact_t *contact;
     struct user *next;
 } user_t;
 
@@ -107,6 +124,12 @@ void remove_client(client_t **head, int fd, server_t *s);
 client_t *find_client_by_name(client_t *head, const char *name);
 
 //modif_login.c
+int update_client_name(client_t **head, int fd, char *name);
+void display_clients(server_t *s);
+//modif_login.c
+void update_user_not_exiting(server_t *s);
+int update_user_existing(server_t *s);
+//modif_login.c
 int update_client(server_t *s, int client_fd);
 
 //gestion_user_list.c
@@ -137,6 +160,7 @@ int number_back(char const *str, char separator);
 bool check_quotes(const char *str);
 char *remove_quotes(const char *str);
 int check_connection_client(client_t *current_client, int client_fd);
+char *my_strdup(const char *src);
 
 //handle_commands.c
 void handle_commands(server_t *s, int client_fd);
@@ -173,6 +197,8 @@ void send_users_to_client(int client_fd);
 void send_unauthorized_to_client(int client_fd);
 void send_user_to_client(int client_fd);
 void send_unknown_user_to_client(int client_fd);
+void send_message_list_to_client(int client_fd);
+void send_timestamp_to_client(int client_fd, time_t timestamp);
 
 // cmd_send.c
 void send_cmd(server_t *s, int client_fd);
@@ -183,6 +209,7 @@ int find_client(server_t *s, int client_fd,
     user_t *dest_user, client_t **dest_client);
 void receive_message(int client_fd, char *sender_uuid, char *message);
 void send_bad_uuid(int client_fd, char *uuid);
+// void add_message(user_t *user, time_t timestamp, char *body);
 
 // user/modif_send.c
 int find_sender(server_t *s, int client_fd, user_t **sender_user);
@@ -196,6 +223,13 @@ void display_users(server_t *s);
 
 //cmd_help.c
 void help_cmd(server_t *s, int client_fd);
+
+//gestion_contact_list.c
+void add_message(message_t **head, char *uuid, char *msg, time_t timestamp);
+message_t *create_message(char *uuid, char *message, time_t timestamp);
+contact_t *find_contact_by_uuid(contact_t *head, char *uuid);
+void add_contact(contact_t **head, char *uuid);
+contact_t *create_contact(char *uuid);
 
 //cmd_use.c
 void use_cmd(server_t *s, int client_fd);

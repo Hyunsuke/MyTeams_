@@ -23,7 +23,7 @@ void send_team_created(server_t *s, int client_fd, char *name, char *desc)
 
 team_t *create_team(server_t *s, int client_fd, char *name, char *description)
 {
-    team_t *new_team = malloc(sizeof(team_t));
+    team_t *new_team = my_malloc(sizeof(team_t));
 
     (void)client_fd;
     if (new_team != NULL) {

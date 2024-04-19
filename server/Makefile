@@ -13,6 +13,7 @@ SRC	=	src/main.c 				\
 		src/server.c			\
 		src/config.c 			\
 		src/my_strcat.c 			\
+		src/garbage_collector.c 			\
 		src/client/gestion_client_list.c \
 		src/client/modif_login.c \
 		src/client/modif_logout.c \
@@ -30,6 +31,7 @@ SRC	=	src/main.c 				\
 		src/cmd/cmd_user.c \
 		src/send_info/send_data.c \
 		src/send_info/send_cmd.c \
+		src/send_info/send_cmd_bis.c 	\
 		src/cmd/cmd_send.c 		\
 		src/cmd/cmd_messages.c 	\
 		src/cmd/cmd_create.c \
@@ -43,6 +45,7 @@ SRC	=	src/main.c 				\
 		src/thread/gestion_thread.c \
 		src/channel/gestion_channel.c \
 		src/reply/gestion_reply.c \
+		src/contact/gestion_contact_list.c	\
 
 
 OBJ	=	$(SRC:.c=.o)

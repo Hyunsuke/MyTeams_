@@ -12,7 +12,6 @@ int update_client_two(server_t *s, client_t *current_client, int client_fd)
     if (current_client->fd == client_fd) {
         if (current_client->name == NULL) {
             current_client->log = true;
-            free(current_client->name);
             current_client->name = s->name_login;
             return 1;
         } else {

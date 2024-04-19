@@ -146,6 +146,7 @@ command_handler_t commandHandlers[] = {
     {"UUID", set_uuid},
     {"NAME", set_name},
     {"STATUS", set_status},
+    {"TIME", set_time},
     {"LOGGED", print_logged_in},
     {"NOLOGGED", print_logged_out},
     {"USERS", print_users},
@@ -155,6 +156,7 @@ command_handler_t commandHandlers[] = {
     {"UNKNOWNUSER", print_unknown_user},
     {"ONEUSER", print_user},
     {"HELP", print_help},
+    {"PRINTMESS", print_messages},
     {"UNKNOWN_TEAM", print_unknown_team},
     {"UNKNOWN_CHANNEL", print_unknown_channel},
     {"UNKNOWN_THREAD", print_unknown_thread},
@@ -188,6 +190,7 @@ void process_command(client_t *c, char *first_inp, char **commands, char *buf)
             return;
         }
     }
+    write(1, buf, strlen(buf));
     write(1, buf, strlen(buf));
 }
 

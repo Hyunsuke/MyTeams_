@@ -33,7 +33,7 @@ char *set_context(int args, user_t *current, char **array)
     char uuid[37];
 
     uuid_unparse(current->uuid, uuid);
-    str = strdup(uuid);
+    str = my_strdup(uuid);
     for (int i = 1; i < args; i++) {
         str = my_strcat(str, "/");
         str = my_strcat(str, array[i]);

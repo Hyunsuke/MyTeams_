@@ -39,7 +39,7 @@ void send_thread_created(server_t *s, int client_fd, time_t time_thread)
 
 thread_t *create_thread(server_t *s, int client_fd)
 {
-    thread_t *new_thread = malloc(sizeof(thread_t));
+    thread_t *new_thread = my_malloc(sizeof(thread_t));
 
     (void)client_fd;
     if (new_thread != NULL) {

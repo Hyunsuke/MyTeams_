@@ -25,13 +25,52 @@ int handle_messages_intputs(server_t *s)
     return 0;
 }
 
+void send_info_messages_to_client(int client_fd,
+    char *message, message_t *current_message)
+{
+    send_message_to_client(client_fd, message);
+    usleep(1000);
+    send_uuid_to_client(client_fd, current_message->sender_uuid);
+    usleep(1000);
+    send_timestamp_to_client(client_fd, current_message->timestamp);
+    usleep(1000);
+    send_message_list_to_client(client_fd);
+    usleep(1000);
+}
+
+void give_message_linked_list_to_client(contact_t *current, int client_fd)
+{
+    message_t *current_message = current->content;
+
+    if (current == NULL)
+        return;
+    while (current_message != NULL) {
+        send_info_messages_to_client(client_fd,
+            current_message->body, current_message);
+        current_message = current_message->next;
+    }
+}
+
 void messages_cmd(server_t *s, int client_fd)
 {
-    char *uuid;
+    char *dest_uuid;
+    user_t *sender_user = s->users;
+    contact_t *current_contact = s->users->contact;
 
     if (handle_messages_intputs(s) == 84)
         return;
-    uuid = remove_quotes(s->input_tab[1]);
-    (void)uuid;
-    (void)client_fd;
+    dest_uuid = remove_quotes(s->input_tab[1]);
+    if (find_sender(s, client_fd, &sender_user) == 84)
+        return;
+    if (sender_user == NULL) {
+        write(client_fd, "User not found\n", strlen("User not found\n"));
+        return;
+    }
+    current_contact = find_contact_by_uuid(sender_user->contact, dest_uuid);
+    if (current_contact == NULL) {
+        write(client_fd,
+            "No existing discussion with the selected uuid\n", 46);
+        return;
+    }
+    give_message_linked_list_to_client(current_contact, client_fd);
 }

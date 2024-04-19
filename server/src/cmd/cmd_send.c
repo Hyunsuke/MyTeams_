@@ -53,20 +53,44 @@ void send_private_message(user_t *sender_user, char *uuid,
     receive_message(dest_client->fd, sender_uuid_str, message);
 }
 
-void execute_send_cmd(server_t *s, int client_fd, char *uuid, char *message)
+static void snd_contact(contact_t **contact, user_t *dest, char *uuid)
 {
-    user_t *sender_user;
-    user_t *dest_user;
-    client_t *dest_client;
-
-    if (find_sender(s, client_fd, &sender_user) == 84)
-        return;
-    if (find_user(s, client_fd, uuid, &dest_user) == 84) {
-        return;
+    (*contact) = find_contact_by_uuid(dest->contact, uuid);
+    if ((*contact) == NULL) {
+        add_contact(&dest->contact, uuid);
+        (*contact) = find_contact_by_uuid(dest->contact, uuid);
     }
-    if (find_client(s, client_fd, dest_user, &dest_client) == 84)
+}
+
+static void dupli_cntact(contact_t **cntact, user_t *send, char *uuid)
+{
+    (*cntact) = find_contact_by_uuid(send->contact, uuid);
+    if ((*cntact) == NULL) {
+        add_contact(&send->contact, uuid);
+        (*cntact) = find_contact_by_uuid(send->contact, uuid);
+    }
+}
+
+void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
+{
+    user_t *sender_user = s->users;
+    user_t *dest_user = s->users;
+    client_t *dest_client;
+    time_t current_time = time(NULL);
+    contact_t *contact = s->users->contact;
+    contact_t *from_contact = s->users->contact;
+    char sender_uuid_str[37];
+
+    if (find_sender(s, client_fd, &sender_user) == 84 ||
+        find_user(s, client_fd, dest_uuid, &dest_user) == 84 ||
+        find_client(s, client_fd, dest_user, &dest_client) == 84)
         return;
-    send_private_message(sender_user, uuid, message, dest_client);
+    uuid_unparse(sender_user->uuid, sender_uuid_str);
+    snd_contact(&contact, dest_user, sender_uuid_str);
+    add_message(&contact->content, sender_uuid_str, msg, current_time);
+    send_private_message(sender_user, dest_uuid, msg, dest_client);
+    dupli_cntact(&from_contact, sender_user, dest_uuid);
+    add_message(&from_contact->content, sender_uuid_str, msg, current_time);
 }
 
 void send_cmd(server_t *s, int client_fd)
@@ -82,3 +106,34 @@ void send_cmd(server_t *s, int client_fd)
     message = remove_quotes(s->input_tab[2]);
     execute_send_cmd(s, client_fd, uuid, message);
 }
+
+//void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
+// {
+//     user_t *sender_user = s->users;
+//     user_t *dest_user = s->users;
+//     client_t *dest_client;
+//     time_t current_time = time(NULL);
+//     contact_t *contact = s->users->contact;
+//     contact_t *from_contact = s->users->contact;
+//     char sender_uuid_str[37];
+
+//     if (find_sender(s, client_fd, &sender_user) == 84 ||
+//         find_user(s, client_fd, dest_uuid, &dest_user) == 84 ||
+//         find_client(s, client_fd, dest_user, &dest_client) == 84)
+//         return;
+//     uuid_unparse(sender_user->uuid, sender_uuid_str);
+//     contact = find_contact_by_uuid(dest_user->contact, sender_uuid_str);
+//     if (contact == NULL) {
+//         add_contact(&dest_user->contact , sender_uuid_str);
+//         contact = find_contact_by_uuid(dest_user->contact, sender_uuid_str);
+//     }
+//     add_message(&contact->content, dest_uuid, message, current_time);
+//     send_private_message(sender_user, dest_uuid, message, dest_client);
+
+//     from_contact = find_contact_by_uuid(sender_user->contact, dest_uuid);
+//     if (from_contact == NULL) {
+//         add_contact(&sender_user->contact , dest_uuid);
+//     from_contact = find_contact_by_uuid(sender_user->contact, dest_uuid);
+//     }
+// add_message(&from_contact->content, sender_uuid_str, message, current_time);
+// }

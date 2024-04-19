@@ -25,11 +25,11 @@ void check_client_down(user_t *current_user, server_t *s, int cli_fd,
     while (current_client != NULL) {
         if (s->is_Ctrl_c == false) {
             send_uuid_to_client(current_client->fd, uuid_str);
-            usleep(1000);
+            usleep(10000);
             send_name_to_client(current_client->fd, current_user->name);
-            usleep(1000);
+            usleep(10000);
             send_logged_out_to_client(current_client->fd);
-            usleep(1000);
+            usleep(10000);
             close_client(s, current_client, cli_fd);
         }
         current_client = current_client->next;

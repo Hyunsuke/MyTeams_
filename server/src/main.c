@@ -7,6 +7,13 @@
 
 #include "server.h"
 
+void signal_handler(int signal)
+{
+    (void) signal;
+    my_free_all();
+    exit(0);
+}
+
 int main(int ac, char **av)
 {
     server_t *s;
@@ -17,8 +24,9 @@ int main(int ac, char **av)
     }
     if (error_handling(ac, av) == 84)
         return 84;
-    s = malloc(sizeof(server_t));
+    s = my_malloc(sizeof(server_t));
     s->port = atoi(av[1]);
+    signal(SIGINT, &signal_handler);
     run_serv(s);
     return 0;
 }
