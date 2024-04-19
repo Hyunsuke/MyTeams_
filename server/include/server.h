@@ -68,6 +68,7 @@ typedef struct server_s {
     char **input_tab;
     char *name_logout;
     bool is_Ctrl_c;
+    char *name_login;
 } server_t;
 
 void printhelp(void);
@@ -83,6 +84,11 @@ client_t *find_client_by_name(client_t *head, const char *name);
 //modif_login.c
 int update_client_name(client_t **head, int fd, char *name);
 void display_clients(server_t *s);
+//modif_login.c
+void update_user_not_exiting(server_t *s);
+int update_user_existing(server_t *s);
+//modif_login.c
+int update_client(server_t *s, int client_fd);
 
 //gestion_user_list.c
 void add_user(user_t **head, char *name);
