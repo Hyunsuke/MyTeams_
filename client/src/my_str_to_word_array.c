@@ -31,7 +31,7 @@ char **my_str_to_word_array(char const *str, char separator)
 {
     int scale_y = number_back(str, separator);
     char **generator = malloc(sizeof(char *) * (scale_y + 1));
-    int first_space_index = 0;;
+    int first_space_index = 0;
 
     while (str[first_space_index] != ' ' && str[first_space_index] != '\0')
         first_space_index++;

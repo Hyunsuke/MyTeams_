@@ -23,6 +23,17 @@ static void initialize_gc(void)
     }
 }
 
+static void *my_malloc_zero(size_t size)
+{
+    char *ptr = malloc(size);
+
+    while (size > 0) {
+        size--;
+        ptr[size] = 0;
+    }
+    return ptr;
+}
+
 static void *my_malloc_allocate(size_t size)
 {
     int index = -1;
@@ -39,7 +50,7 @@ static void *my_malloc_allocate(size_t size)
         fprintf(stderr, "Erreur d'allocation.\n");
         return NULL;
     }
-    ptr = malloc(size);
+    ptr = my_malloc_zero(size);
     if (ptr != NULL) {
         object_table[index].ptr = ptr;
         object_table[index].active = 1;
