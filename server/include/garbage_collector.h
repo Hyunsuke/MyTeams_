@@ -7,7 +7,7 @@
 
 #ifndef GARBAGE_COLLECTOR_H
     #define GARBAGE_COLLECTOR_H
-    #define MAX_OBJECTS 100
+    #define MAX_OBJECTS 2000
 
     #include <stdio.h>
     #include <stdlib.h>
