@@ -12,11 +12,11 @@ void send_from_user_existence(user_t *current_user,
 {
     if (new_current_client->name != NULL) {
         send_uuid_to_client(new_current_client->fd, uuid);
-        usleep(1000);
+        usleep(10000);
         send_name_to_client(new_current_client->fd, current_user->name);
-        usleep(1000);
+        usleep(10000);
         send_logged_in_to_client(new_current_client->fd);
-        usleep(1000);
+        usleep(10000);
     }
 }
 
@@ -59,11 +59,11 @@ static void send_from_check_pos(user_t *new_current_user,
 {
     if (new_current_client->name != NULL) {
         send_uuid_to_client(new_current_client->fd, uuid);
-        usleep(1000);
+        usleep(10000);
         send_name_to_client(new_current_client->fd, new_current_user->name);
-        usleep(1000);
+        usleep(10000);
         send_logged_in_to_client(new_current_client->fd);
-        usleep(1000);
+        usleep(10000);
     }
 }
 
