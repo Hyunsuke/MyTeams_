@@ -25,32 +25,6 @@ int error_sub(server_t *s)
     return 0;
 }
 
-user_t *get_actual_user(server_t *s, int client_fd)
-{
-    client_t **client_head = &s->clients;
-    client_t *current_client = *client_head;
-    user_t **user_head = &s->users;
-    user_t *current_user = *user_head;
-    user_t *new_user;
-    char *save_name;
-
-    while (current_client != NULL) {
-        if (current_client->fd == client_fd) {
-            save_name = current_client->name;
-            break;
-        }
-        current_client = current_client->next;
-    }
-    while (current_user != NULL) {
-        if (strcmp(current_user->name, save_name) == 0) {
-            new_user = current_user;
-            return new_user;
-        }
-        current_user = current_user->next;
-    }
-    return NULL;
-}
-
 void send_subscribe_to_subscribed(team_t *current_team, server_t *s)
 {
     user_t **user_subscribe_head = &current_team->user;
