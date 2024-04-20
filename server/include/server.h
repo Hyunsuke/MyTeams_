@@ -117,6 +117,7 @@ typedef struct server_s {
     char *channel_name;
     char *channel_description;
     char *save_name;
+    uuid_t save_uuid;
 } server_t;
 
 void printhelp(void);

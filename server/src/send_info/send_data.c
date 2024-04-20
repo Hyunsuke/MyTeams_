@@ -43,7 +43,7 @@ void send_timestamp_to_client(int client_fd, time_t timestamp)
 {
     char buffer[1024] = "TIME ";
     struct tm *timeinfo;
-    char *time_string = (char *)malloc(20 * sizeof(char));
+    char *time_string = (char *)my_malloc(20 * sizeof(char));
 
     if (time_string == NULL) {
         printf("Allocation failed");

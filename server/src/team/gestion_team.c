@@ -9,18 +9,28 @@
 
 void send_team_created(server_t *s, int client_fd, char *name, char *desc)
 {
-    send(client_fd, my_strcat("TEAM_UUID ", s->uuid_team), strlen(s->uuid_team) + 11, 0);
-    usleep(10000);
-    send(client_fd, my_strcat("TEAM_NAME ", name), strlen(name) + 11, 0);
-    usleep(10000);
-    send(client_fd, my_strcat("TEAM_DESCRIPTION ", desc), strlen(desc) +18, 0);
-    usleep(10000);
+    client_t **head = &s->clients;
+    client_t *current_client = *head;
+    while (current_client != NULL) {
+        if (current_client->name != NULL) {
+            send(current_client->fd, my_strcat("TEAM_UUID ", s->uuid_team), strlen(s->uuid_team) + 11, 0);
+            usleep(10000);
+            send(current_client->fd, my_strcat("TEAM_NAME ", name), strlen(name) + 11, 0);
+            usleep(10000);
+            send(current_client->fd, my_strcat("TEAM_DESCRIPTION ", desc), strlen(desc) +18, 0);
+            usleep(10000);
+            send(current_client->fd, "PRINT_TEAM_EVENT_CREATED", 25, 0);
+            usleep(10000);
+        }
+        current_client = current_client->next;
+    }
     send(client_fd, "PRINT_TEAM_CREATED", 19, 0);
+    usleep(10000);
 }
 
 team_t *create_team(server_t *s, int client_fd, char *name, char *description)
 {
-    team_t *new_team = malloc(sizeof(team_t));
+    team_t *new_team = my_malloc(sizeof(team_t));
 
     (void)client_fd;
     if (new_team != NULL) {
@@ -54,11 +64,10 @@ char *search_uuid(server_t *s, char *name_user)
 {
     user_t **user_head = &s->users;
     user_t *current_user = *user_head;
-    char *uuid_str = (char *)malloc((37 + 1) * sizeof(char));
+    char *uuid_str = (char *)my_malloc((37 + 1) * sizeof(char));
 
     while (current_user != NULL) {
         if (strcmp(current_user->name, name_user) == 0) {
-            //send user uuid ici à tout les clients
             uuid_unparse(current_user->uuid, uuid_str);
             break;
         }
@@ -109,9 +118,8 @@ void add_team(server_t *s, int client_fd)
     char *uuid_str = get_user_uuid(s, client_fd);
 
     if (check_team(s, name) == 84) {
-        write(client_fd, "Team already exist\n", 20);
-        //  send au client
-        //  int client_error_already_exist(void);
+        send(client_fd, "PRINT_CLIENT_EXIST", 19, 0);
+        usleep(10000);
         return;
     }
     update_team_list(s, client_fd, name, description);

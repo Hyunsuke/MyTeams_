@@ -103,6 +103,13 @@ void print_team_created(client_t *client, char **commands)
     client->team_description);
 }
 
+void print_team_event_created(client_t *client, char **commands)
+{
+    (void)commands;
+    client_event_team_created(client->team_uuid, client->team_name,
+    client->team_description);
+}
+
 // Team
 void set_team_uuid(client_t *client, char **commands)
 {
@@ -184,6 +191,7 @@ command_handler_t commandHandlers[] = {
     {"PRINT_THREAD_CREATED", print_thread_created},
     {"PRINT_CHANNEL_CREATED", print_channel_created},
     {"PRINT_TEAM_CREATED", print_team_created},
+    {"PRINT_TEAM_EVENT_CREATED", print_team_event_created},
     {"PRINT_CLIENT_EXIST", print_client_already_exist},
     {"PRINT_SUBSCRIBE_EVENT", print_subscribe_event},
     {NULL, NULL}
