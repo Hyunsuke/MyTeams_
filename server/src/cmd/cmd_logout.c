@@ -35,10 +35,11 @@ int error_logout(server_t *s, int client_fd)
     return 0;
 }
 
-void logout_cmd(server_t *s, int client_fd)
+int logout_cmd(server_t *s, int client_fd)
 {
     s->is_Ctrl_c = false;
     if (error_logout(s, client_fd) == 84)
-        return;
+        return 84;
     update_user_and_client_logout(s, &s->users, &s->clients, client_fd);
+    return 0;
 }

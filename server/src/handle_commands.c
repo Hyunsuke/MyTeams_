@@ -21,17 +21,17 @@ command_handler_t commandHandlers[] = {
     {NULL, NULL}
 };
 
-void process_command(server_t *s, int client_fd, const char *command)
+int process_command(server_t *s, int client_fd, const char *command)
 {
     for (int i = 0; commandHandlers[i].command != NULL; ++i) {
         if (strcmp(command, commandHandlers[i].command) == 0) {
-            commandHandlers[i].handler(s, client_fd);
-            return;
+            return commandHandlers[i].handler(s, client_fd);
         }
     }
+    return 0;
 }
 
-void handle_commands(server_t *s, int client_fd)
+int handle_commands(server_t *s, int client_fd)
 {
-    process_command(s, client_fd, s->input_tab[0]);
+    return process_command(s, client_fd, s->input_tab[0]);
 }

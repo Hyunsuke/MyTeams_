@@ -51,26 +51,27 @@ void give_message_linked_list_to_client(contact_t *current, int client_fd)
     }
 }
 
-void messages_cmd(server_t *s, int client_fd)
+int messages_cmd(server_t *s, int client_fd)
 {
     char *dest_uuid;
     user_t *sender_user = s->users;
     contact_t *current_contact = s->users->contact;
 
     if (handle_messages_intputs(s) == 84)
-        return;
+        return 84;
     dest_uuid = remove_quotes(s->input_tab[1]);
     if (find_sender(s, client_fd, &sender_user) == 84)
-        return;
+        return 84;
     if (sender_user == NULL) {
         write(client_fd, "User not found\n", strlen("User not found\n"));
-        return;
+        return 84;
     }
     current_contact = find_contact_by_uuid(sender_user->contact, dest_uuid);
     if (current_contact == NULL) {
         write(client_fd,
             "No existing discussion with the selected uuid\n", 46);
-        return;
+        return 84;
     }
     give_message_linked_list_to_client(current_contact, client_fd);
+    return 0;
 }

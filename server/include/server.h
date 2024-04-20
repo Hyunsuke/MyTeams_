@@ -90,6 +90,10 @@ typedef struct client {
     struct client *next;
 } client_t;
 
+typedef struct save {
+    char *uuid;
+} save_t;
+
 typedef struct server_s {
     int port;
     int server_fd;
@@ -118,6 +122,7 @@ typedef struct server_s {
     char *channel_description;
     char *save_name;
     uuid_t save_uuid;
+    save_t *save;
 } server_t;
 
 void printhelp(void);
@@ -170,26 +175,26 @@ int check_connection_client(client_t *current_client, int client_fd);
 char *my_strdup(const char *src);
 
 //handle_commands.c
-void handle_commands(server_t *s, int client_fd);
+int handle_commands(server_t *s, int client_fd);
 
 //cmd_login.c
-void login_cmd(server_t *s, int client_fd);
+int login_cmd(server_t *s, int client_fd);
 
 //cmd_logout.c
-void logout_cmd(server_t *s, int client_fd);
+int logout_cmd(server_t *s, int client_fd);
 void update_user_and_client_logout(server_t *s, user_t **user_head,
     client_t **client_head, int cli_fd);
 int logout_client(client_t *current_client, int cli_fd, server_t *s);
 void logout_user(user_t *current_user, server_t *s, int cli_fd);
 
 //cmd_users.c
-void users_cmd(server_t *s, int client_fd);
+int users_cmd(server_t *s, int client_fd);
 
 //cmd_user.c
-void user_cmd(server_t *s, int client_fd);
+int user_cmd(server_t *s, int client_fd);
 
 //cmd_create.c
-void create_cmd(server_t *s, int client_fd);
+int create_cmd(server_t *s, int client_fd);
 char **define_context(server_t *s, int client_fd);
 
 //send_infos.c
@@ -208,7 +213,7 @@ void send_message_list_to_client(int client_fd);
 void send_timestamp_to_client(int client_fd, time_t timestamp);
 
 // cmd_send.c
-void send_cmd(server_t *s, int client_fd);
+int send_cmd(server_t *s, int client_fd);
 void send_bad_uuid(int client_fd, char *uuid);
 
 // client/modif_send.c
@@ -223,13 +228,13 @@ int find_sender(server_t *s, int client_fd, user_t **sender_user);
 int find_user(server_t *s, int client_fd, char *uuid, user_t **dest_user);
 
 // cmd_messages.c
-void messages_cmd(server_t *s, int client_fd);
+int messages_cmd(server_t *s, int client_fd);
 
 void display_clients(server_t *s);
 void display_users(server_t *s);
 
 //cmd_help.c
-void help_cmd(server_t *s, int client_fd);
+int help_cmd(server_t *s, int client_fd);
 
 //gestion_contact_list.c
 void add_message(message_t **head, char *uuid, char *msg, time_t timestamp);
@@ -239,7 +244,7 @@ void add_contact(contact_t **head, char *uuid);
 contact_t *create_contact(char *uuid);
 
 //cmd_use.c
-void use_cmd(server_t *s, int client_fd);
+int use_cmd(server_t *s, int client_fd);
 
 //my_strcat.c
 char *my_strcat(const char *str1, const char *str2);
@@ -258,7 +263,7 @@ void add_channel(server_t *s, int client_fd);
 void add_reply(server_t *s, int client_fd);
 
 //cmd_subscribe.c
-void subscribe_cmd(server_t *s, int client_fd);
+int subscribe_cmd(server_t *s, int client_fd);
 
 //time_conversion_function
 char *time_t_to_string(time_t timestamp);
@@ -267,7 +272,7 @@ int check_subscribe(team_t *current_team, server_t *s, int client_fd);
 
 typedef struct {
     const char *command;
-    void (*handler)(server_t *, int);
+    int (*handler)(server_t *, int);
 } command_handler_t;
 
 #endif /* !SERVER_H_ */

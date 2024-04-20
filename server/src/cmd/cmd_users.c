@@ -57,9 +57,10 @@ int error_users(server_t *s, int client_fd)
     return 0;
 }
 
-void users_cmd(server_t *s, int client_fd)
+int users_cmd(server_t *s, int client_fd)
 {
     if (error_users(s, client_fd) == 84)
-        return;
+        return 84;
     send_user_list(&s->users, &s->clients, client_fd);
+    return 0;
 }

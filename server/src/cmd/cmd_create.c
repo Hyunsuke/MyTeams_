@@ -111,7 +111,7 @@ void create_element(server_t *s, int client_fd, char *type)
     }
 }
 
-void create_cmd(server_t *s, int client_fd)
+int create_cmd(server_t *s, int client_fd)
 {
     char *type;
     client_t **client_head = &s->clients;
@@ -120,11 +120,12 @@ void create_cmd(server_t *s, int client_fd)
     if (check_connection_client(current_client, client_fd) == 84) {
         send_unauthorized_to_client(client_fd);
         usleep(1000);
-        return;
+        return 84;
     }
     type = get_type_of_create(s, client_fd);
     if (error_create(s, type, client_fd) == 84) {
-        return;
+        return 84;
     }
     create_element(s, client_fd, type);
+    return 0;
 }

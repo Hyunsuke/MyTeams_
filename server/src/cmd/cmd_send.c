@@ -93,18 +93,19 @@ void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
     add_message(&from_contact->content, sender_uuid_str, msg, current_time);
 }
 
-void send_cmd(server_t *s, int client_fd)
+int send_cmd(server_t *s, int client_fd)
 {
     char *uuid;
     char *message;
 
     if (handle_send_inputs(s, client_fd) == 84)
-        return;
+        return 84;
     if (check_and_handle_client_connection(s, client_fd) == 84)
-        return;
+        return 84;
     uuid = remove_quotes(s->input_tab[1]);
     message = remove_quotes(s->input_tab[2]);
     execute_send_cmd(s, client_fd, uuid, message);
+    return 0;
 }
 
 //void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)

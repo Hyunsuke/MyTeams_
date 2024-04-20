@@ -61,7 +61,7 @@ int check_use_error(client_t *current, int client_fd, int args, server_t *s)
     return args;
 }
 
-void use_cmd(server_t *s, int client_fd)
+int use_cmd(server_t *s, int client_fd)
 {
     client_t *current_client = get_client(&s->clients, client_fd);
     user_t *current_user;
@@ -69,15 +69,16 @@ void use_cmd(server_t *s, int client_fd)
 
     args = check_use_error(current_client, client_fd, args, s);
     if (args == 84)
-        return;
+        return 84;
     for (int i = 1; s->input_tab[i] != NULL; i++) {
         if (!check_quotes(s->input_tab[i])) {
             write(client_fd, "user_uuid doesn't start or end with quotes\n",
                 strlen("user_uuid doesn't start or end with quotes\n"));
-            return;
+            return 84;
         }
         s->input_tab[i] = remove_quotes(s->input_tab[i]);
     }
     current_user = find_user_by_name(s->users, current_client->name);
     current_user->context = set_context(args, current_user, s->input_tab);
+    return 0;
 }

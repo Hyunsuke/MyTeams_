@@ -25,7 +25,7 @@ char *list_commands(void)
     return list_commands;
 }
 
-void help_cmd(server_t *s, int client_fd)
+int help_cmd(server_t *s, int client_fd)
 {
     char *help_message =
     "Available commands:\n"
@@ -47,4 +47,5 @@ void help_cmd(server_t *s, int client_fd)
     write(client_fd, help_message, strlen(help_message));
     write(client_fd, list_commands(), strlen(list_commands()));
     (void)s;
+    return 0;
 }

@@ -176,25 +176,26 @@ int check_subscribe(team_t *current_team, server_t *s, int client_fd)
     return 84;
 }
 
-void subscribe_cmd(server_t *s, int client_fd)
+int subscribe_cmd(server_t *s, int client_fd)
 {
     char *error = "UNKNOWN_TEAM ";
     client_t **client_head = &s->clients;
     client_t *current_client = *client_head;
 
     if (error_sub(s) == 84)
-        return;
+        return 84;
     s->id_team = remove_quotes(s->input_tab[1]);
     if (check_connection_client(current_client, client_fd) == 84) {
         send_unauthorized_to_client(client_fd);
         usleep(1000);
-        return;
+        return 84;
     }
     if (team_dont_exist(s) == 84) {
         error = my_strcat(error, s->id_team);
         send(client_fd, error, strlen(error), 0);
         usleep(1000);
-        return;
+        return 84;
     }
     set_subscribe_user(s, client_fd);
+    return 0;
 }

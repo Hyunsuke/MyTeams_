@@ -36,10 +36,11 @@ int error_login(server_t *s)
     return 0;
 }
 
-void login_cmd(server_t *s, int client_fd)
+int login_cmd(server_t *s, int client_fd)
 {
     if (error_login(s) == 84)
-        return;
+        return 84;
     s->name_login = remove_quotes(s->input_tab[1]);
     update_log(s, client_fd);
+    return 0;
 }

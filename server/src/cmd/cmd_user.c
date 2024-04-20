@@ -76,12 +76,13 @@ int error_user(server_t *s)
     return 0;
 }
 
-void user_cmd(server_t *s, int client_fd)
+int user_cmd(server_t *s, int client_fd)
 {
     char *clean_uuid;
 
     if (error_user(s) == 84)
-        return;
+        return 84;
     clean_uuid = remove_quotes(s->input_tab[1]);
     send_user_info(&s->users, &s->clients, client_fd, clean_uuid);
+    return 0;
 }
