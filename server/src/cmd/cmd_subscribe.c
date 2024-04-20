@@ -51,10 +51,68 @@ user_t *get_actual_user(server_t *s, int client_fd)
     return NULL;
 }
 
+void send_subscribe_to_subscribed(team_t *current_team, server_t *s)
+{
+    user_t **user_subscribe_head = &current_team->user;
+    user_t *user_subscribe = *user_subscribe_head;
+
+    while (user_subscribe != NULL) {
+        client_t *current_client = s->clients;
+        while (current_client != NULL) {
+            if (strcmp(user_subscribe->name, current_client->name) == 0) {
+                send(current_client->fd, my_strcat("TEAM_UUID ", s->uuid_team), strlen(s->uuid_team) + 11, 0);
+                usleep(10000);
+                send(current_client->fd, my_strcat("USER_UUID ", s->uuid_user), strlen(s->uuid_user) + 11, 0);
+                usleep(10000);
+                send(current_client->fd, "PRINT_SUBSCRIBE_EVENT", 22, 0);
+                usleep(10000);
+                break;
+            }
+            current_client = current_client->next;
+        }
+        user_subscribe = user_subscribe->next;
+    }
+}
+
+void set_values(server_t *s, int client_fd)
+{
+    client_t **client_head = &s->clients;
+    client_t *current_client = *client_head;
+    user_t **user_head = &s->users;
+    user_t *current_user = *user_head;
+    char *name_user;
+
+    while (current_client != NULL) {
+        if (client_fd == current_client->fd) {
+            name_user = current_client->name;
+        }
+        current_client = current_client->next;
+    }
+    while (current_user != NULL) {
+        if (strcmp(name_user, current_user->name) == 0) {
+            s->save_name = current_user->name;
+            return;
+        }
+        current_user = current_user->next;
+    }
+}
+
+user_t *cpy_user(server_t *s, int client_fd)
+{
+    user_t *new_user = my_malloc(sizeof(user_t));
+
+    set_values(s, client_fd);
+    if (new_user != NULL) {
+        new_user->name = my_strdup(s->save_name);
+        new_user->next = NULL;
+    }
+    return new_user;
+}
+
 void add_user_elem(team_t *current_team, server_t *s, int client_fd)
 {
-    user_t *new_user = get_actual_user(s, client_fd);
-    char *uuid_user = get_user_uuid(s, client_fd);
+    user_t *new_user = cpy_user(s, client_fd);
+    s->uuid_user = get_user_uuid(s, client_fd);
     user_t **user_head = &current_team->user;
     user_t *user_subscribe = *user_head;
 
@@ -66,7 +124,7 @@ void add_user_elem(team_t *current_team, server_t *s, int client_fd)
         }
         user_subscribe->next = new_user;
     }
-    server_event_user_subscribed(s->uuid_team, uuid_user);
+    server_event_user_subscribed(s->uuid_team, s->uuid_user);
 }
 
 void set_subscribe_user(server_t *s, int client_fd)
@@ -78,6 +136,7 @@ void set_subscribe_user(server_t *s, int client_fd)
         uuid_unparse(current_team->uuid, s->uuid_team);
         if (strcmp(s->uuid_team, s->id_team) == 0) {
             add_user_elem(current_team, s, client_fd);
+            send_subscribe_to_subscribed(current_team, s);
         }
         current_team = current_team->next;
     }
@@ -113,21 +172,28 @@ int check_subscribe(team_t *current_team, server_t *s, int client_fd)
         }
         current_user = current_user->next;
     }
-    send_unauthorized_to_client(client_fd);
     return 84;
 }
 
 void subscribe_cmd(server_t *s, int client_fd)
 {
     char *error = "UNKNOWN_TEAM ";
+    client_t **client_head = &s->clients;
+    client_t *current_client = *client_head;
 
     if (error_sub(s) == 84)
         return;
     s->id_team = remove_quotes(s->input_tab[1]);
+    if (check_connection_client(current_client, client_fd) == 84) {
+        send_unauthorized_to_client(client_fd);
+        usleep(1000);
+        return;
+    }
     if (team_dont_exist(s) == 84) {
-        write(client_fd, "Try to subscribe to an unknown team\n", 37);
         error = my_strcat(error, s->id_team);
         send(client_fd, error, strlen(error), 0);
+        usleep(1000);
+        return;
     }
     set_subscribe_user(s, client_fd);
 }

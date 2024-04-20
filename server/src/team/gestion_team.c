@@ -9,21 +9,18 @@
 
 void send_team_created(server_t *s, int client_fd, char *name, char *desc)
 {
-    char *uuid = NULL;
-    uuid = my_strcat("TEAM_UUID ", s->uuid_team);
-    send(client_fd, uuid, strlen(uuid), 0);
+    send(client_fd, my_strcat("TEAM_UUID ", s->uuid_team), strlen(s->uuid_team) + 11, 0);
     usleep(10000);
     send(client_fd, my_strcat("TEAM_NAME ", name), strlen(name) + 11, 0);
     usleep(10000);
-    send(client_fd, my_strcat("TEAM_DESCRIPTION ", desc), strlen(desc) + 18, 0);
+    send(client_fd, my_strcat("TEAM_DESCRIPTION ", desc), strlen(desc) +18, 0);
     usleep(10000);
-    send(client_fd, "PRINT_TEAM_CREATED", strlen("PRINT_TEAM_CREATED"), 0);
-    usleep(10000);
+    send(client_fd, "PRINT_TEAM_CREATED", 19, 0);
 }
 
 team_t *create_team(server_t *s, int client_fd, char *name, char *description)
 {
-    team_t *new_team = my_malloc(sizeof(team_t));
+    team_t *new_team = malloc(sizeof(team_t));
 
     (void)client_fd;
     if (new_team != NULL) {
@@ -61,6 +58,7 @@ char *search_uuid(server_t *s, char *name_user)
 
     while (current_user != NULL) {
         if (strcmp(current_user->name, name_user) == 0) {
+            //send user uuid ici à tout les clients
             uuid_unparse(current_user->uuid, uuid_str);
             break;
         }
@@ -118,5 +116,4 @@ void add_team(server_t *s, int client_fd)
     }
     update_team_list(s, client_fd, name, description);
     server_event_team_created(s->uuid_team, name, uuid_str);
-    //send cmd create à tous les clients
 }

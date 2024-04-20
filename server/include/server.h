@@ -106,11 +106,17 @@ typedef struct server_s {
     char *thread_title;
     char *thread_body;
     char *reply_body;
+    char *uuid_user;
     char uuid_team[37];
     char uuid_channel[37];
     char uuid_thread[37];
     char **parse_context;
     bool is_Ctrl_c;
+    int nb_args_use;
+    int cli_fd;
+    char *channel_name;
+    char *channel_description;
+    char *save_name;
 } server_t;
 
 void printhelp(void);

@@ -142,6 +142,12 @@ void print_client_already_exist(client_t *client, char **commands)
     client_error_already_exist();
 }
 
+void print_subscribe_event(client_t *client, char **commands)
+{
+    (void)commands;
+    client_print_subscribed(client->user_uuid, client->team_uuid);
+}
+
 command_handler_t commandHandlers[] = {
     {"UUID", set_uuid},
     {"NAME", set_name},
@@ -179,6 +185,7 @@ command_handler_t commandHandlers[] = {
     {"PRINT_CHANNEL_CREATED", print_channel_created},
     {"PRINT_TEAM_CREATED", print_team_created},
     {"PRINT_CLIENT_EXIST", print_client_already_exist},
+    {"PRINT_SUBSCRIBE_EVENT", print_subscribe_event},
     {NULL, NULL}
 };
 

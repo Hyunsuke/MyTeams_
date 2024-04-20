@@ -18,7 +18,7 @@ void send_reply_received(server_t *s, int client_fd)
     usleep(10000);
     send(client_fd, my_strcat("USER_UUID ", uuid), strlen(uuid) + 11, 0);
     usleep(10000);
-    send(client_fd, my_strcat("REPLY_BODY ", s->reply_body), strlen(s->reply_body) +12, 0);
+    send(client_fd, my_strcat("REPLY_BODY ", s->reply_body), strlen(s->reply_body) + 12, 0);
     usleep(10000);
     send(client_fd, "PRINT_REPLY_RECEIVED", 21, 0);
     usleep(10000);
@@ -36,16 +36,15 @@ void send_reply_created(server_t *s, int client_fd, time_t time_reply)
     usleep(10000);
     send(client_fd, my_strcat("REPLY_TIMESTAMP ", timestamp_str), strlen(timestamp_str) + 17, 0);
     usleep(10000);
-    send(client_fd, my_strcat("REPLY_BODY ", s->reply_body), strlen(s->reply_body) +12, 0);
+    send(client_fd, my_strcat("REPLY_BODY ", s->reply_body), strlen(s->reply_body) + 12, 0);
     usleep(10000);
-    send(client_fd, "PRINT_REPLY_CREATED", 21, 0);
+    send(client_fd, "PRINT_REPLY_CREATED", 20, 0);
     usleep(10000);
 }
 
 reply_t *create_reply(server_t *s, int client_fd)
 {
-    (void)client_fd;
-    reply_t *new_reply = my_malloc(sizeof(reply_t));
+    reply_t *new_reply = malloc(sizeof(reply_t));
 
     if (new_reply != NULL) {
         new_reply->body = s->reply_body;
@@ -152,7 +151,6 @@ void add_reply(server_t *s, int client_fd)
     s->reply_body = remove_quotes(s->input_tab[1]);
     s->parse_context = define_context(s, client_fd);
     //NE PAS OUBLIER DE CHECK SI THREAD EXISTE DÉJÀ
-    //NE PAS OUBLIER DE CHECK SI LE USER EST SUB A LA TEAM
     while (current_team != NULL) {
         if (find_right_team(s, client_fd, current_team) == 84)
             return;

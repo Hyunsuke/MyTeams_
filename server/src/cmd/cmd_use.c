@@ -15,6 +15,7 @@ client_t *get_client(client_t **client_head, int client_fd)
         if (current->fd == client_fd) {
             return current;
         }
+        current = current->next;
     }
     return NULL;
 }

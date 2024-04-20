@@ -27,11 +27,11 @@ void send_thread_created(server_t *s, int client_fd, time_t time_thread)
     usleep(10000);
     send(client_fd, my_strcat("USER_UUID ", uuid), strlen(uuid) + 11, 0);
     usleep(10000);
-    send(client_fd, my_strcat("THREAD_TIMESTAMP ", timestamp_str), strlen(timestamp_str) + 17, 0);
+    send(client_fd, my_strcat("THREAD_TIMESTAMP ", timestamp_str), strlen(timestamp_str) + 18, 0);
     usleep(10000);
-    send(client_fd, my_strcat("THREAD_TITLE ", s->thread_title), strlen(s->thread_title) +13, 0);
+    send(client_fd, my_strcat("THREAD_TITLE ", s->thread_title), strlen(s->thread_title) + 14, 0);
     usleep(10000);
-    send(client_fd, my_strcat("THREAD_BODY ", s->thread_body), strlen(s->thread_body) +13, 0);
+    send(client_fd, my_strcat("THREAD_BODY ", s->thread_body), strlen(s->thread_body) + 13, 0);
     usleep(10000);
     send(client_fd, "PRINT_THREAD_CREATED", 21, 0);
     usleep(10000);
@@ -39,7 +39,7 @@ void send_thread_created(server_t *s, int client_fd, time_t time_thread)
 
 thread_t *create_thread(server_t *s, int client_fd)
 {
-    thread_t *new_thread = my_malloc(sizeof(thread_t));
+    thread_t *new_thread = malloc(sizeof(thread_t));
 
     (void)client_fd;
     if (new_thread != NULL) {
@@ -81,7 +81,6 @@ int define_new_thread(server_t *s, int client_fd, channel_t *current_channel)
         set_new_thread(current_thread, new_thread, thread_head);
         server_event_thread_created(s->uuid_channel, s->uuid_thread,
             uuid_user, s->thread_title, s->thread_body);
-        //send thread à tous les clients subscribed
         return 84;
     }
     return 0;
@@ -112,7 +111,7 @@ static int find_right_team(server_t *s, int client_fd, team_t *current_team)
     uuid_unparse(current_team->uuid, s->uuid_team);
     if (strcmp(s->uuid_team, s->parse_context[1]) == 0) {
         if (check_subscribe(current_team, s, client_fd) == 84)
-            return 84;
+        return 84;
         if (find_right_channel(s, client_fd, current_team) == 84) {
             return 84;
         }
