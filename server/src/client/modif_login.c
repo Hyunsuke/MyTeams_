@@ -26,10 +26,14 @@ int update_client(server_t *s, int client_fd)
 {
     client_t **client_head = &s->clients;
     client_t *current_client = *client_head;
+    int check_log = 0;
 
     while (current_client != NULL) {
-        if (update_client_two(s, current_client, client_fd))
+        check_log = update_client_two(s, current_client, client_fd);
+        if (check_log == 1)
             break;
+        if (check_log == 84)
+            return 84;
         current_client = current_client->next;
     }
     return 0;
