@@ -36,10 +36,11 @@ int process_command(server_t *s, int client_fd, const char *command)
 void push_back_save(server_t *s, char *buffer, int client_fd)
 {
     FILE *file = fopen("save.txt", "a");
-    user_t *current = find_user_by_fd(s->clients, s->users, client_fd);
+    user_t *current;
 
     if (buffer == NULL)
         return;
+    current = find_user_by_fd(s->clients, s->users, client_fd);
     if (file == NULL) {
         printf("Erreur lors de l'ouverture du fichier save.txt\n");
         return;
