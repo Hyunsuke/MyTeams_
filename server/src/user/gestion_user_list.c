@@ -21,7 +21,6 @@ user_t *create_user(server_t *s, char *name)
             uuid_unparse(new_user->uuid, uuid_str);
         }
         new_user->log = 1;
-
         new_user->context = my_strdup(uuid_str);
         new_user->name = my_strdup(name);
         new_user->next = NULL;

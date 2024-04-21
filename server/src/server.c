@@ -50,7 +50,7 @@ static int get_fd_from_array(server_t *s, char *buffer, int client_fd)
         if (current == NULL)
             return 84;
         s->save_struct->buffer = buffer;
-        return get_info_from_file(s, array[0], current->fd );
+        return get_info_from_file(s, array[0], current->fd);
     }
     return get_info_from_file(s, array[0], client_fd);
 }

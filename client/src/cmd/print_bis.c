@@ -7,12 +7,6 @@
 
 #include "client.h"
 
-void print_unknown_user(client_t *client, char **commands)
-{
-    (void)commands;
-    client_error_unknown_user(client->uuid_str);
-}
-
 void print_unknown_team(client_t *client, char **commands)
 {
     (void)client;

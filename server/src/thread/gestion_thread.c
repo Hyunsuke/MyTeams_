@@ -7,48 +7,62 @@
 
 #include "server.h"
 
-char *time_t_to_string(time_t timestamp)
+static void send_independant_info(client_t *current_client, server_t *s)
 {
-    struct tm *timeinfo;
-    char *time_string = (char *)my_malloc(20 * sizeof(char));
-
-    timeinfo = localtime(&timestamp);
-    strftime(time_string, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
-    return time_string;
+    send(current_client->fd, my_strcat("THREAD_TITLE ", s->thread_title),
+        strlen(s->thread_title) + 14, 0);
+    usleep(10000);
+    send(current_client->fd, my_strcat("THREAD_BODY ", s->thread_body),
+        strlen(s->thread_body) + 13, 0);
+    usleep(10000);
+    send(current_client->fd, "PRINT_THREAD_EVENT_CREATED", 27, 0);
+    usleep(10000);
 }
 
-void send_thread_created(server_t *s, team_t *current_team, int client_fd, time_t time_thread)
+static void use_fct_send_thread(client_t *current_client, server_t *s,
+    user_t *user_subscribe, time_t time_thread)
+{
+    char *timestamp_str = time_t_to_string(time_thread);
+    char *uuid = get_user_uuid(s, s->cli_fd);
+
+    if (strcmp(user_subscribe->name, current_client->name) == 0) {
+        send(current_client->fd, my_strcat("THREAD_UUID ", s->uuid_thread),
+            strlen(s->uuid_thread) + 13, 0);
+        usleep(10000);
+        send(current_client->fd,
+            my_strcat("USER_UUID ", uuid), strlen(uuid) + 11, 0);
+        usleep(10000);
+        send(current_client->fd, my_strcat("THREAD_TIMESTAMP ", timestamp_str),
+            strlen(timestamp_str) + 18, 0);
+        usleep(10000);
+        send_independant_info(current_client, s);
+    }
+}
+
+static void send_thread_to_subscribe(client_t *current_client, server_t *s,
+    user_t *user_subscribe, time_t time_thread)
+{
+    if (current_client->name != NULL) {
+        use_fct_send_thread(current_client, s, user_subscribe, time_thread);
+    }
+}
+
+void send_thread_created(server_t *s, team_t *current_team,
+    int client_fd, time_t time_thread)
 {
     user_t **user_subscribe_head = &current_team->user;
     user_t *user_subscribe = *user_subscribe_head;
-    char *timestamp_str = time_t_to_string(time_thread);
-    char *uuid;
     client_t **client_head;
     client_t *current_client;
 
     if (!s->save_struct->is_saving)
         return;
-    uuid = get_user_uuid(s, client_fd);
     while (user_subscribe != NULL) {
         client_head = &s->clients;
         current_client = *client_head;
         while (current_client != NULL) {
-            if (current_client->name != NULL) {
-                if (strcmp(user_subscribe->name, current_client->name) == 0) {
-                    send(current_client->fd, my_strcat("THREAD_UUID ", s->uuid_thread), strlen(s->uuid_thread) + 13, 0);
-                    usleep(10000);
-                    send(current_client->fd, my_strcat("USER_UUID ", uuid), strlen(uuid) + 11, 0);
-                    usleep(10000);
-                    send(current_client->fd, my_strcat("THREAD_TIMESTAMP ", timestamp_str), strlen(timestamp_str) + 18, 0);
-                    usleep(10000);
-                    send(current_client->fd, my_strcat("THREAD_TITLE ", s->thread_title), strlen(s->thread_title) + 14, 0);
-                    usleep(10000);
-                    send(current_client->fd, my_strcat("THREAD_BODY ", s->thread_body), strlen(s->thread_body) + 13, 0);
-                    usleep(10000);
-                    send(current_client->fd, "PRINT_THREAD_EVENT_CREATED", 27, 0);
-                    usleep(10000);
-                }
-            }
+            send_thread_to_subscribe(current_client, s, user_subscribe,
+                time_thread);
             current_client = current_client->next;
         }
         user_subscribe = user_subscribe->next;
@@ -125,7 +139,8 @@ static int find_right_channel(server_t *s, int client_fd, team_t *current_team)
     current_channel = *channel_head;
     while (current_channel != NULL) {
         uuid_unparse(current_channel->uuid, s->uuid_channel);
-        if (define_new_thread(s, client_fd, current_channel, current_team) == 84) {
+        if (define_new_thread(s, client_fd, current_channel,
+            current_team) == 84) {
             return 84;
         }
         current_channel = current_channel->next;
@@ -158,6 +173,7 @@ int add_thread(server_t *s, int client_fd)
     s->thread_title = remove_quotes(s->input_tab[1]);
     s->thread_body = remove_quotes(s->input_tab[2]);
     s->parse_context = define_context(s, client_fd);
+    s->cli_fd = client_fd;
     while (current_team != NULL) {
         if (find_right_team(s, client_fd, current_team) == 84)
             return 84;
