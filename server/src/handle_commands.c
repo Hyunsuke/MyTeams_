@@ -38,6 +38,8 @@ void push_back_save(server_t *s, char *buffer, int client_fd)
     FILE *file = fopen("save.txt", "a");
     user_t *current = find_user_by_fd(s->clients, s->users, client_fd);
 
+    if (buffer == NULL)
+        return;
     if (file == NULL) {
         printf("Erreur lors de l'ouverture du fichier save.txt\n");
         return;
