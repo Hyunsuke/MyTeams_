@@ -188,5 +188,5 @@ int info_cmd(server_t *s, int client_fd)
     if (sender_user == NULL)
         return 84;
     find_info_context(s, sender_user, client_fd);
-    return 0;
+    return 1;
 }

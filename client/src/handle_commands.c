@@ -190,35 +190,6 @@ void print_list_replies(client_t *client, char **commands)
         client->reply_body);
 }
 
-void print_info_team(client_t *client, char **commands)
-{
-    (void)commands;
-    client_print_team(
-        client->team_uuid,
-        client->team_name,
-        client->team_description);
-}
-
-void print_info_channel(client_t *client, char **commands)
-{
-    (void)commands;
-    client_print_channel(
-        client->channel_uuid,
-        client->channel_name,
-        client->channel_description);
-}
-
-void print_info_thread(client_t *client, char **commands)
-{
-    (void)commands;
-    client_print_thread(
-        client->thread_uuid,
-        client->user_uuid,
-        client->thread_timestamp,
-        client->thread_title,
-        client->thread_body);
-}
-
 command_handler_t commandHandlers[] = {
     {"UUID", set_uuid},
     {"NAME", set_name},
