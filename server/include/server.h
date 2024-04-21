@@ -196,6 +196,7 @@ int user_cmd(server_t *s, int client_fd);
 //cmd_create.c
 int create_cmd(server_t *s, int client_fd);
 char **define_context(server_t *s, int client_fd);
+char *get_type_of_create(server_t *s, int client_fd);
 
 //send_infos.c
 void send_uuid_to_client(int client_fd, char *uuid_str);
@@ -215,6 +216,7 @@ void send_timestamp_to_client(int client_fd, time_t timestamp);
 // cmd_send.c
 int send_cmd(server_t *s, int client_fd);
 void send_bad_uuid(int client_fd, char *uuid);
+int check_and_handle_client_connection(server_t *s, int client_fd);
 
 // client/modif_send.c
 int find_client(server_t *s, int client_fd,
@@ -267,6 +269,9 @@ int subscribe_cmd(server_t *s, int client_fd);
 
 //time_conversion_function
 char *time_t_to_string(time_t timestamp);
+
+// cmd_list.c
+int list_cmd(server_t *s, int client_fd);
 
 int check_subscribe(team_t *current_team, server_t *s, int client_fd);
 

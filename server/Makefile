@@ -41,6 +41,7 @@ SRC	=	src/main.c 				\
 		src/cmd/cmd_help.c \
 		src/cmd/cmd_use.c \
 		src/cmd/cmd_subscribe.c \
+		src/cmd/cmd_list.c 		\
 		src/team/gestion_team.c \
 		src/thread/gestion_thread.c \
 		src/channel/gestion_channel.c \
