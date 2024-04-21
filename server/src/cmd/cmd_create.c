@@ -90,7 +90,8 @@ static int error_create(server_t *s, char *type, int client_fd)
         return 84;
     if (strcmp(type, "reply") == 0) {
         if (nb_args != 2) {
-            write(client_fd, "Invalid number of args.\n", 24);
+            write(client_fd, "413 bad arguments for /create command\n",
+                strlen("413 bad arguments for /create command\n"));
             return 84;
         }
         if (check_quotes(s->input_tab[1]) == false) {

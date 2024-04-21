@@ -190,5 +190,7 @@ int info_cmd(server_t *s, int client_fd)
     if (sender_user == NULL)
         return 84;
     find_info_context(s, sender_user, client_fd);
+    write(client_fd, "430 information retrieved successfully\n",
+            strlen("430 information retrieved successfully\n"));
     return 1;
 }

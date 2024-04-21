@@ -150,7 +150,10 @@ int list_cmd(server_t *s, int client_fd)
         return 84;
     context_tokens = my_str_to_word_array(sender_user->context, '/');
     type = get_type_of_create(s, client_fd);
-    if (s->save_struct->is_saving)
+    if (s->save_struct->is_saving) {
         find_context(s, client_fd, type, context_tokens);
+        write(client_fd, "420 list retrieved successfully\n",
+            strlen("420 list retrieved successfully\n"));
+    }
     return 1;
 }
