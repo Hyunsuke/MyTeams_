@@ -23,6 +23,8 @@ channel_t *create_channel(server_t *s, int client_fd)
 {
     channel_t *new_channel = my_malloc(sizeof(channel_t));
 
+    s->channel_name = remove_quotes(s->input_tab[1]);
+    s->channel_description = remove_quotes(s->input_tab[2]);
     (void)client_fd;
     if (new_channel != NULL) {
         uuid_generate(new_channel->uuid);
@@ -80,8 +82,6 @@ int add_channel(server_t *s, int client_fd)
     char *team_uuid = parse_context[1];
     char *error = my_strcat("UNKNOWN_TEAM ", team_uuid);
 
-    s->channel_name = remove_quotes(s->input_tab[1]);
-    s->channel_description = remove_quotes(s->input_tab[2]);
     s->cli_fd = client_fd;
     int status = add_channel_to_team(s, new_channel, team_uuid);
     if (status == 84) {

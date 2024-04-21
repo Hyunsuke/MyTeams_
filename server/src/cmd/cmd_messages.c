@@ -7,18 +7,20 @@
 
 #include "server.h"
 
-int handle_messages_intputs(server_t *s)
+int handle_messages_intputs(server_t *s, int client_fd)
 {
     int nb_args = 0;
 
+    if (check_and_handle_client_connection(s, client_fd) == 84)
+        return 84;
     for (; s->input_tab[nb_args] != NULL; nb_args++);
     if (nb_args != 2) {
-        write(1, "Wrong number of arguments for /messages command\n",
+        write(client_fd, "Wrong number of arguments for /messages command\n",
             strlen("Wrong number of arguments for /messages command\n"));
         return 84;
     }
     if (check_quotes(s->input_tab[1]) == false) {
-        write(1, "user_uuid doesn't start or end with quotes\n",
+        write(client_fd, "user_uuid doesn't start or end with quotes\n",
             strlen("user_uuid doesn't start or end with quotes\n"));
         return 84;
     }
@@ -53,14 +55,12 @@ int give_message_list_to_cli(contact_t *current, int client_fd, server_t *s)
     return 1;
 }
 
-int messages_cmd(server_t *s, int client_fd)
+int process_messages_cmd(server_t *s, int client_fd)
 {
     char *dest_uuid;
     user_t *sender_user = s->users;
     contact_t *current_contact = s->users->contact;
 
-    if (handle_messages_intputs(s) == 84)
-        return 84;
     dest_uuid = remove_quotes(s->input_tab[1]);
     if (find_sender(s, client_fd, &sender_user) == 84)
         return 84;
@@ -75,4 +75,11 @@ int messages_cmd(server_t *s, int client_fd)
         return 84;
     }
     return give_message_list_to_cli(current_contact, client_fd, s);
+}
+
+int messages_cmd(server_t *s, int client_fd)
+{
+    if (handle_messages_intputs(s, client_fd) == 84)
+        return 84;
+    return process_messages_cmd(s, client_fd);
 }
