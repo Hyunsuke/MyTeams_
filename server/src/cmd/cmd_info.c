@@ -22,7 +22,7 @@ static int handle_info_intput(server_t *s, int client_fd)
     return 0;
 }
 
-static int get_info_user(server_t *s, int client_fd, user_t *sender_user)
+static int get_info_user(int client_fd, user_t *sender_user)
 {
     char sender_user_uuid_str[37];
     char status_str[6];
@@ -46,8 +46,8 @@ static int get_info_user(server_t *s, int client_fd, user_t *sender_user)
     return 0;
 }
 
-static void send_team_info(server_t *s,
-    int client_fd, char *team_uuid_str, team_t *current_team)
+static void send_team_info(int client_fd, char *team_uuid_str,
+    team_t *current_team)
 {
     send(client_fd, my_strcat("TEAM_UUID ", team_uuid_str),
         strlen(team_uuid_str) + 11, 0);
@@ -71,7 +71,7 @@ static int get_team_info(server_t *s,
     while (current_team != NULL) {
         uuid_unparse(current_team->uuid, current_team_uuid_str);
         if (strcmp(current_team_uuid_str, team_uuid_str) == 0) {
-            send_team_info(s, client_fd, current_team_uuid_str, current_team);
+            send_team_info(client_fd, current_team_uuid_str, current_team);
             return 0;
         }
         current_team = current_team->next;
@@ -80,8 +80,8 @@ static int get_team_info(server_t *s,
     return 84;
 }
 
-static void send_channel_info(server_t *s,
-    int client_fd, char *channel_uuid_str, channel_t *current_channel)
+static void send_channel_info(int client_fd,
+    char *channel_uuid_str, channel_t *current_channel)
 {
     send(client_fd, my_strcat("CHANNEL_UUID ", channel_uuid_str),
         strlen(channel_uuid_str) + 14, 0);
@@ -106,7 +106,7 @@ static int get_channel_info(server_t *s,
     while (current_channel != NULL) {
         uuid_unparse(current_channel->uuid, current_channel_uuid_str);
         if (strcmp(current_channel_uuid_str, channel_uuid_str) == 0) {
-            send_channel_info(s, client_fd,
+            send_channel_info(client_fd,
             current_channel_uuid_str, current_channel);
             return 0;
         }
@@ -167,7 +167,7 @@ static int find_info_context(server_t *s, user_t *sender_user,
     context_tokens = my_str_to_word_array(sender_user->context, '/');
     type = get_type_of_create(s, client_fd);
     if (strcmp(type, "team") == 0)
-        return get_info_user(s, client_fd, sender_user);
+        return get_info_user(client_fd, sender_user);
     if (strcmp(type, "channel") == 0)
         return get_team_info(s, client_fd, context_tokens[1]);
     if (strcmp(type, "thread") == 0)
@@ -181,6 +181,8 @@ int info_cmd(server_t *s, int client_fd)
 {
     user_t *sender_user = s->users;
 
+    if (!s->save_struct->is_saving)
+        return 1;
     if (handle_info_intput(s, client_fd) == 84)
         return 84;
     if (find_sender(s, client_fd, &sender_user) == 84)
