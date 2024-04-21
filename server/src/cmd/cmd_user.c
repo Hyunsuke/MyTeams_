@@ -83,7 +83,9 @@ int user_cmd(server_t *s, int client_fd)
     if (error_user(s) == 84)
         return 84;
     clean_uuid = remove_quotes(s->input_tab[1]);
-    if (s->save_struct->is_saving)
+    if (s->save_struct->is_saving) {
         send_user_info(&s->users, &s->clients, client_fd, clean_uuid);
+        dprintf(client_fd, "162 user details retrieved successfully\n");
+    }
     return 1;
 }

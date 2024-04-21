@@ -15,7 +15,7 @@ int update_client_two(server_t *s, client_t *current_client, int client_fd)
             current_client->name = s->name_login;
             return 1;
         } else {
-            write(client_fd, "Client already log\n", 20);
+            write(client_fd, "122 user already logged in\n", 27);
             return 84;
         }
     }

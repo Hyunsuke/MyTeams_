@@ -11,6 +11,8 @@
 char *list_commands(void)
 {
     char *list_commands =
+    "'/subscribed' ?[“team_uuid”] : list all subscribed teams "
+    " or list all users subscribed to a team\n"
     "'/unsubscribe' [“team_uuid”] : unsubscribe from a team\n"
     "'/use' ?[“team_uuid”] ?[“channel_uuid”] ?[“thread_uuid”] :"
     " Sets the command context to a team/channel/thread\n"
@@ -40,12 +42,11 @@ int help_cmd(server_t *s, int client_fd)
     " list all messages exchanged with the specified user\n"
     "'/subscribe' [“team_uuid”] : subscribe to the events of a team and"
     " its sub directories"
-    " (enable reception of all events from a team)\n"
-    "'/subscribed' ?[“team_uuid”] : list all subscribed teams "
-    " or list all users subscribed to a team\n";
+    " (enable reception of all events from a team)\n";
 
     write(client_fd, help_message, strlen(help_message));
     write(client_fd, list_commands(), strlen(list_commands()));
+    dprintf(client_fd, "170 list of commands retrieved successfully\n");
     (void)s;
     return 1;
 }
