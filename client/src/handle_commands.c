@@ -155,6 +155,41 @@ void print_subscribe_event(client_t *client, char **commands)
     client_print_subscribed(client->user_uuid, client->team_uuid);
 }
 
+void print_list_teams(client_t *client, char **commands)
+{
+    (void)commands;
+    client_print_teams(client->team_uuid,
+        client->team_name, client->team_description);
+}
+
+void print_list_channels(client_t *client, char **commands)
+{
+    (void)commands;
+    client_print_channel(client->channel_uuid,
+        client->channel_name, client->channel_description);
+}
+
+void print_list_threads(client_t *client, char **commands)
+{
+    (void)commands;
+    client_print_thread(
+        client->thread_uuid,
+        client->user_uuid,
+        client->thread_timestamp,
+        client->thread_title,
+        client->thread_body);
+}
+
+void print_list_replies(client_t *client, char **commands)
+{
+    (void)commands;
+    client_thread_print_replies(
+        client->thread_uuid,
+        client->user_uuid,
+        client->reply_timestamp,
+        client->reply_body);
+}
+
 command_handler_t commandHandlers[] = {
     {"UUID", set_uuid},
     {"NAME", set_name},
@@ -194,6 +229,10 @@ command_handler_t commandHandlers[] = {
     {"PRINT_TEAM_EVENT_CREATED", print_team_event_created},
     {"PRINT_CLIENT_EXIST", print_client_already_exist},
     {"PRINT_SUBSCRIBE_EVENT", print_subscribe_event},
+    {"PRINT_LIST_TEAMS", print_list_teams},
+    {"PRINT_LIST_CHANNEL", print_list_channels},
+    {"PRINT_LIST_THREAD", print_list_threads},
+    {"PRINT_LIST_REPLY", print_list_replies},
     {NULL, NULL}
 };
 

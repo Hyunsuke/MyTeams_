@@ -47,6 +47,7 @@ SRC	=	src/main.c 				\
 		src/channel/gestion_channel.c \
 		src/reply/gestion_reply.c \
 		src/contact/gestion_contact_list.c	\
+		src/client/modif_list.c 			\
 
 
 OBJ	=	$(SRC:.c=.o)

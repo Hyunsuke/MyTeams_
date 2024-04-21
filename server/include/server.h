@@ -275,6 +275,15 @@ int list_cmd(server_t *s, int client_fd);
 
 int check_subscribe(team_t *current_team, server_t *s, int client_fd);
 
+// modif_list.c
+void send_list_teams_info(int client_fd, team_t *current_team, server_t *s);
+void send_list_channels_info(int client_fd,
+    channel_t *current_channel, server_t *s);
+void send_list_threads_info(int client_fd, thread_t *current_thread,
+    time_t time_thread, server_t *s);
+void send_list_replies_info(int client_fd,
+    reply_t *current_reply, thread_t *current_thread, server_t *s);
+
 typedef struct {
     const char *command;
     int (*handler)(server_t *, int);

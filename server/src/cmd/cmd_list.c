@@ -27,18 +27,17 @@ static int list_teams(server_t *s, int client_fd)
     team_t *current_team = s->team;
 
     while (current_team != NULL) {
-        write(client_fd, current_team->name, strlen(current_team->name));
-        write(client_fd, "\n", 1);
+        send_list_teams_info(client_fd, current_team, s);
         current_team = current_team->next;
     }
     return 0;
 }
 
-static int send_channel(int client_fd, channel_t *current_channel)
+static int send_channel(int client_fd, channel_t *current_channel, server_t *s)
 {
     (void)client_fd;
     while (current_channel != NULL) {
-        printf("Channel: %s\n", current_channel->name);
+        send_list_channels_info(client_fd, current_channel, s);
         current_channel = current_channel->next;
     }
     return 0;
@@ -55,7 +54,7 @@ static int list_channels_of_team(server_t *s,
         uuid_unparse(current_team->uuid, current_team_uuid_str);
         if (strcmp(current_team_uuid_str, team_uuid_str) == 0) {
             current_channel = current_team->channel;
-            send_channel(client_fd, current_channel);
+            send_channel(client_fd, current_channel, s);
             return 0;
         }
         current_team = current_team->next;
@@ -64,11 +63,12 @@ static int list_channels_of_team(server_t *s,
     return 84;
 }
 
-static int send_thread(int client_fd, thread_t *current_thread)
+static int send_thread(int client_fd, thread_t *current_thread, server_t *s)
 {
     (void)client_fd;
     while (current_thread != NULL) {
-        printf("Thread: %s\n", current_thread->title);
+        send_list_threads_info(client_fd,
+            current_thread, current_thread->time, s);
         current_thread = current_thread->next;
     }
     return 0;
@@ -85,7 +85,7 @@ static int list_threads_of_channel(server_t *s,
         uuid_unparse(current_channel->uuid, current_channel_uuid_str);
         if (strcmp(current_channel_uuid_str, channel_uuid_str) == 0) {
             current_thread = current_channel->thread;
-            send_thread(client_fd, current_thread);
+            send_thread(client_fd, current_thread, s);
             return 0;
         }
         current_channel = current_channel->next;
@@ -93,11 +93,12 @@ static int list_threads_of_channel(server_t *s,
     return 84;
 }
 
-static int send_reply(int client_fd, reply_t *current_reply)
+static int send_reply(int client_fd,
+    reply_t *current_reply, thread_t *current_thread, server_t *s)
 {
     (void)client_fd;
     while (current_reply != NULL) {
-        printf("Reply: %s\n", current_reply->body);
+        send_list_replies_info(client_fd, current_reply, current_thread, s);
         current_reply = current_reply->next;
     }
     return 0;
@@ -114,7 +115,7 @@ static int list_replies_of_thread(server_t *s,
         uuid_unparse(current_thread->uuid, current_thread_uuid_str);
         if (strcmp(current_thread_uuid_str, thread_uuid_str) == 0) {
             current_reply = current_thread->reply;
-            send_reply(client_fd, current_reply);
+            send_reply(client_fd, current_reply, current_thread, s);
             return 0;
         }
         current_thread = current_thread->next;
