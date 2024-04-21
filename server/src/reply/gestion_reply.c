@@ -48,6 +48,8 @@ void send_reply_created(server_t *s, int client_fd, time_t time_reply,
     client_t **client_head;
     client_t *current_client;
 
+    if (!s->save_struct->is_saving)
+        return;
     while (user_subscribe != NULL) {
         client_head = &s->clients;
         current_client = *client_head;
@@ -69,7 +71,8 @@ reply_t *create_reply(server_t *s, int client_fd, team_t *current_team)
     if (new_reply != NULL) {
         new_reply->body = s->reply_body;
         new_reply->time = time(NULL);
-        send_reply_created(s, client_fd, new_reply->time, current_team);
+        if (s->save_struct->is_saving)
+            send_reply_created(s, client_fd, new_reply->time, current_team);
         new_reply->next = NULL;
     }
     return new_reply;
@@ -101,8 +104,9 @@ static int define_new_reply(server_t *s, int client_fd,
         current_reply = *reply_head;
         new_reply = create_reply(s, client_fd, current_team);
         set_new_reply(current_reply, new_reply, reply_head);
-        server_event_reply_created(s->uuid_thread, uuid_user,
-            s->reply_body);
+        if (s->save_struct->is_saving)
+            server_event_reply_created(s->uuid_thread, uuid_user,
+                s->reply_body);
         return 84;
     }
     return 0;

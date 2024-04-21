@@ -55,6 +55,8 @@ void send_thread_created(server_t *s, team_t *current_team,
     client_t **client_head;
     client_t *current_client;
 
+    if (!s->save_struct->is_saving)
+        return;
     while (user_subscribe != NULL) {
         client_head = &s->clients;
         current_client = *client_head;
@@ -75,8 +77,13 @@ thread_t *create_thread(server_t *s, int client_fd, team_t *current_team)
 
     (void)client_fd;
     if (new_thread != NULL) {
-        uuid_generate(new_thread->uuid);
-        uuid_unparse(new_thread->uuid, s->uuid_thread);
+        if (s->save_struct->is_saving) {
+            uuid_generate(new_thread->uuid);
+            uuid_unparse(new_thread->uuid, s->uuid_thread);
+        } else {
+            strcpy(s->uuid_thread, s->save_struct->uuid);
+            uuid_parse(s->save_struct->uuid, new_thread->uuid);
+        }
         new_thread->title = s->thread_title;
         new_thread->body = s->thread_body;
         new_thread->time = time(NULL);

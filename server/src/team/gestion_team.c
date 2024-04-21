@@ -45,8 +45,13 @@ team_t *create_team(server_t *s, int client_fd, char *name, char *description)
 
     (void)client_fd;
     if (new_team != NULL) {
-        uuid_generate(new_team->uuid);
-        uuid_unparse(new_team->uuid, s->uuid_team);
+        if (s->save_struct->is_saving) {
+            uuid_generate(new_team->uuid);
+            uuid_unparse(new_team->uuid, s->uuid_team);
+        } else {
+            strcpy(s->uuid_team, s->save_struct->uuid);
+            uuid_parse(s->save_struct->uuid, new_team->uuid);
+        }
         new_team->name = name;
         new_team->description = description;
         if (s->save_struct->is_saving)

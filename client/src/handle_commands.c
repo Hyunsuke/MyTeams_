@@ -52,6 +52,9 @@ command_handler_t commandHandlers[] = {
     {"PRINT_LIST_CHANNEL", print_list_channels},
     {"PRINT_LIST_THREAD", print_list_threads},
     {"PRINT_LIST_REPLY", print_list_replies},
+    {"PRINT_INFO_TEAM", print_info_team},
+    {"PRINT_INFO_CHANNEL", print_info_channel},
+    {"PRINT_INFO_THREAD", print_info_thread},
     {NULL, NULL}
 };
 

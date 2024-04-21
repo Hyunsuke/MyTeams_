@@ -41,7 +41,7 @@ void client_is_connected(server_t *s, int client_fd)
     }
     buffer[bytes_received] = '\0';
     s->input_tab = my_str_to_word_array(buffer, ' ');
-    s->save_struct->buffer = buffer;
+    s->save_struct->buffer = my_strdup(buffer);
     handle_commands(s, client_fd);
 }
 

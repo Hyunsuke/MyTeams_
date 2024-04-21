@@ -11,6 +11,8 @@ void send_list_teams_info(int client_fd, team_t *current_team, server_t *s)
 {
     char current_team_uuid_str[37];
 
+    if (!s->save_struct->is_saving)
+        return;
     uuid_unparse(current_team->uuid, current_team_uuid_str);
     send(client_fd, my_strcat("TEAM_UUID ",
         current_team_uuid_str), strlen(current_team_uuid_str) + 11, 0);
@@ -30,6 +32,8 @@ void send_list_channels_info(int client_fd,
 {
     char current_channel_uuid_str[37];
 
+    if (!s->save_struct->is_saving)
+        return;
     uuid_unparse(current_channel->uuid, current_channel_uuid_str);
     send(client_fd, my_strcat("CHANNEL_UUID ",
         current_channel_uuid_str), strlen(current_channel_uuid_str) + 14, 0);
@@ -48,6 +52,8 @@ void send_list_channels_info(int client_fd,
 void send_list_threads_info_bis(int client_fd,
     thread_t *current_thread, server_t *s)
 {
+    if (!s->save_struct->is_saving)
+        return;
     send(client_fd, my_strcat("THREAD_TITLE ",
         current_thread->title), strlen(current_thread->title) + 14, 0);
     usleep(10000);
