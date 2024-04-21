@@ -19,6 +19,7 @@ SRC	=	src/main.c 				\
 		src/cmd/print.c	\
 		src/cmd/print_bis.c	\
 		src/cmd/print_bis_2.c	\
+		src/cmd/print_bis_3.c 	\
 		src/cmd/status.c \
 		src/cmd/message.c \
 		src/cmd/time.c 		\

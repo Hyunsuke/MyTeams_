@@ -129,6 +129,9 @@ void print_help(client_t *c, char **commands);
 void print_unknown_team(client_t *client, char **commands);
 void print_unknown_channel(client_t *client, char **commands);
 void print_unknown_thread(client_t *client, char **commands);
+void print_info_team(client_t *client, char **commands);
+void print_info_channel(client_t *client, char **commands);
+void print_info_thread(client_t *client, char **commands);
 void print_client_already_exist(client_t *client, char **commands);
 void print_messages(client_t *c, char **commands);
 
