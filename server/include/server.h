@@ -284,6 +284,9 @@ void send_list_threads_info(int client_fd, thread_t *current_thread,
 void send_list_replies_info(int client_fd,
     reply_t *current_reply, thread_t *current_thread, server_t *s);
 
+// cmd_send.c
+int info_cmd(server_t *s, int client_fd);
+
 typedef struct {
     const char *command;
     int (*handler)(server_t *, int);
