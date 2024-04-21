@@ -65,6 +65,7 @@ static void set_logout(server_t *s)
         current_user->log -= 1;
         uuid_unparse(current_user->uuid, uuid);
         current_user->context = my_strdup(uuid);
+        server_event_user_loaded(uuid, current_user->name);
         current_user = current_user->next;
     }
 }
