@@ -31,13 +31,13 @@ void send_info_messages_to_client(int client_fd,
     char *message, message_t *current_message)
 {
     send_message_to_client(client_fd, message);
-    usleep(1000);
+    usleep(10000);
     send_uuid_to_client(client_fd, current_message->sender_uuid);
-    usleep(1000);
+    usleep(10000);
     send_timestamp_to_client(client_fd, current_message->timestamp);
-    usleep(1000);
+    usleep(10000);
     send_message_list_to_client(client_fd);
-    usleep(1000);
+    usleep(10000);
 }
 
 int give_message_list_to_cli(contact_t *current, int client_fd, server_t *s)
