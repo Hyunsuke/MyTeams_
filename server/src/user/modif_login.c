@@ -25,6 +25,7 @@ void send_if_save(server_t *s, user_t *current_user,
 {
     if (s->save_struct->is_saving)
         send_from_user_existence(current_user, new_current_client, uuid);
+    dprintf(new_current_client->fd, "120 user logged successfully\n");
 }
 
 int check_user_existence(server_t *s, user_t *current_user,
