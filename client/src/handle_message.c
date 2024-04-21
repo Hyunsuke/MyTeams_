@@ -43,7 +43,7 @@ int receive_message(client_t *c, int sockfd)
         printf("Erreur lors de la réception des données du serveur");
         return -1;
     } else if (bytes_received == 0) {
-        printf("Le serveur a fermé la connexion.\n");
+        printf("550 server closed the connection\n");
         return 1;
     } else {
         buffer[bytes_received] = '\0';
