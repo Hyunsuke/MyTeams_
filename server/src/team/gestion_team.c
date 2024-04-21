@@ -38,7 +38,8 @@ team_t *create_team(server_t *s, int client_fd, char *name, char *description)
         uuid_unparse(new_team->uuid, s->uuid_team);
         new_team->name = name;
         new_team->description = description;
-        send_team_created(s, client_fd, name, description);
+        if (s->save_struct->is_saving)
+            send_team_created(s, client_fd, name, description);
         new_team->user = NULL;
         new_team->channel = NULL;
         new_team->next = NULL;
@@ -111,17 +112,20 @@ void update_team_list(server_t *s, int client_fd, char *name,
     }
 }
 
-void add_team(server_t *s, int client_fd)
+int add_team(server_t *s, int client_fd)
 {
     char *name = remove_quotes(s->input_tab[1]);
     char *description = remove_quotes(s->input_tab[2]);
     char *uuid_str = get_user_uuid(s, client_fd);
 
     if (check_team(s, name) == 84) {
-        send(client_fd, "PRINT_CLIENT_EXIST", 19, 0);
+        if (s->save_struct->is_saving)
+            send(client_fd, "PRINT_CLIENT_EXIST", 19, 0);
         usleep(10000);
-        return;
+        return 84;
     }
     update_team_list(s, client_fd, name, description);
-    server_event_team_created(s->uuid_team, name, uuid_str);
+    if (s->save_struct->is_saving)
+        server_event_team_created(s->uuid_team, name, uuid_str);
+    return 0;
 }

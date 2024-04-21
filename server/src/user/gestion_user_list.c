@@ -7,25 +7,31 @@
 
 #include "server.h"
 
-user_t *create_user(char *name)
+user_t *create_user(server_t *s, char *name)
 {
     user_t *new_user = my_malloc(sizeof(user_t));
-    char uuid_str[37];
+    char uuid_str[37] = "";
 
     if (new_user != NULL) {
-        uuid_generate(new_user->uuid);
-        uuid_unparse(new_user->uuid, uuid_str);
+        if (s->save_struct->is_uuid_there && !s->save_struct->is_saving) {
+            uuid_parse(s->save_struct->uuid, new_user->uuid);
+            strcpy(s->save_struct->uuid, uuid_str);
+        } else {
+            uuid_generate(new_user->uuid);
+            uuid_unparse(new_user->uuid, uuid_str);
+        }
         new_user->log = 1;
-        new_user->name = my_strdup(name);
+
         new_user->context = my_strdup(uuid_str);
+        new_user->name = my_strdup(name);
         new_user->next = NULL;
     }
     return new_user;
 }
 
-void add_user(user_t **head, char *name)
+void add_user(server_t *s, user_t **head, char *name)
 {
-    user_t *new_user = create_user(name);
+    user_t *new_user = create_user(s, name);
     user_t *current = *head;
 
     if (new_user == NULL) {

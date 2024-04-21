@@ -47,5 +47,5 @@ int help_cmd(server_t *s, int client_fd)
     write(client_fd, help_message, strlen(help_message));
     write(client_fd, list_commands(), strlen(list_commands()));
     (void)s;
-    return 0;
+    return 1;
 }

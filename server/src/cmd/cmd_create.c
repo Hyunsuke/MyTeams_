@@ -95,20 +95,32 @@ int error_create(server_t *s, char *type, int client_fd)
     return 0;
 }
 
-void create_element(server_t *s, int client_fd, char *type)
+int create_element(server_t *s, int client_fd, char *type)
 {
     if (strcmp("team", type) == 0) {
-        add_team(s, client_fd);
+        if (add_team(s, client_fd) == 84)
+            return 84;
+        s->save_struct->buffer = my_strcat(s->save_struct->buffer, "\e");
+        s->save_struct->buffer = my_strcat(s->save_struct->buffer,
+        s->uuid_team);
     }
     if (strcmp("channel", type) == 0) {
-        add_channel(s, client_fd);
+        if (add_channel(s, client_fd) == 84)
+            return 84;
+        s->save_struct->buffer = my_strcat(s->save_struct->buffer, "\e");
+        s->save_struct->buffer = my_strcat(s->save_struct->buffer,
+        s->uuid_channel);
     }
     if (strcmp("thread", type) == 0) {
         add_thread(s, client_fd);
+        s->save_struct->buffer = my_strcat(s->save_struct->buffer, "\e");
+        s->save_struct->buffer = my_strcat(s->save_struct->buffer,
+        s->uuid_thread);
     }
     if (strcmp("reply", type) == 0) {
         add_reply(s, client_fd);
     }
+    return 0;
 }
 
 int create_cmd(server_t *s, int client_fd)
@@ -118,7 +130,8 @@ int create_cmd(server_t *s, int client_fd)
     client_t *current_client = *client_head;
 
     if (check_connection_client(current_client, client_fd) == 84) {
-        send_unauthorized_to_client(client_fd);
+        if (s->save_struct->is_saving)
+            send_unauthorized_to_client(client_fd);
         usleep(1000);
         return 84;
     }
@@ -126,6 +139,5 @@ int create_cmd(server_t *s, int client_fd)
     if (error_create(s, type, client_fd) == 84) {
         return 84;
     }
-    create_element(s, client_fd, type);
-    return 0;
+    return create_element(s, client_fd, type);
 }

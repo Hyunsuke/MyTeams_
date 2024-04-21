@@ -125,7 +125,8 @@ void add_user_elem(team_t *current_team, server_t *s, int client_fd)
         }
         user_subscribe->next = new_user;
     }
-    server_event_user_subscribed(s->uuid_team, s->uuid_user);
+    if (s->save_struct->is_saving)
+        server_event_user_subscribed(s->uuid_team, s->uuid_user);
 }
 
 void set_subscribe_user(server_t *s, int client_fd)
@@ -137,7 +138,8 @@ void set_subscribe_user(server_t *s, int client_fd)
         uuid_unparse(current_team->uuid, s->uuid_team);
         if (strcmp(s->uuid_team, s->id_team) == 0) {
             add_user_elem(current_team, s, client_fd);
-            send_subscribe_to_subscribed(current_team, s);
+            if (s->save_struct->is_saving)
+                send_subscribe_to_subscribed(current_team, s);
         }
         current_team = current_team->next;
     }
@@ -151,6 +153,7 @@ int team_dont_exist(server_t *s)
 
     while (current_team != NULL) {
         uuid_unparse(current_team->uuid, uuid);
+        // printf("%s\n%s\n", uuid, s->id_team); // Debug pour save
         if (strcmp(uuid, s->id_team) == 0) {
             return 0;
         }
@@ -165,7 +168,7 @@ int check_subscribe(team_t *current_team, server_t *s, int client_fd)
     user_t **user_head = &current_team->user;
     user_t *current_user = *user_head;
     char uuid_team_user[37];
-    
+
     while (current_user != NULL) {
         uuid_unparse(current_user->uuid, uuid_team_user);
         if (strcmp(uuid, uuid_team_user) == 0) {
@@ -186,13 +189,15 @@ int subscribe_cmd(server_t *s, int client_fd)
         return 84;
     s->id_team = remove_quotes(s->input_tab[1]);
     if (check_connection_client(current_client, client_fd) == 84) {
-        send_unauthorized_to_client(client_fd);
+        if (s->save_struct->is_saving)
+            send_unauthorized_to_client(client_fd);
         usleep(1000);
         return 84;
     }
     if (team_dont_exist(s) == 84) {
         error = my_strcat(error, s->id_team);
-        send(client_fd, error, strlen(error), 0);
+        if (s->save_struct->is_saving)
+            send(client_fd, error, strlen(error), 0);
         usleep(1000);
         return 84;
     }

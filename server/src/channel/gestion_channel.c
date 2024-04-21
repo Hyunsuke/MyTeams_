@@ -73,7 +73,7 @@ int add_channel_to_team(server_t *s, channel_t *new_channel,
     return 84;
 }
 
-void add_channel(server_t *s, int client_fd)
+int add_channel(server_t *s, int client_fd)
 {
     channel_t *new_channel = create_channel(s, client_fd);
     char **parse_context = define_context(s, client_fd);
@@ -85,11 +85,15 @@ void add_channel(server_t *s, int client_fd)
     s->cli_fd = client_fd;
     int status = add_channel_to_team(s, new_channel, team_uuid);
     if (status == 84) {
-        send(client_fd, error, strlen(error), 0);
+        if (s->save_struct->is_saving)
+            send(client_fd, error, strlen(error), 0);
         usleep(10000);
-        return;
+        return 84;
     } else if (status == 24) {
-        send_unauthorized_to_client(client_fd);
+        if (s->save_struct->is_saving)
+            send_unauthorized_to_client(client_fd);
         usleep(10000);
+        return 84;
     }
+    return 0;
 }

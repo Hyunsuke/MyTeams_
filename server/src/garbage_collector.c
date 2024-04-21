@@ -47,7 +47,7 @@ static void *my_malloc_allocate(size_t size)
             break;
         }
     if (index == -1) {
-        fprintf(stderr, "Erreur d'allocation.\n");
+        printf("Erreur d'allocation.\n");
         return NULL;
     }
     ptr = my_malloc_zero(size);

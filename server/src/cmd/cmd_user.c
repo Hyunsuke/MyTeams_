@@ -83,6 +83,7 @@ int user_cmd(server_t *s, int client_fd)
     if (error_user(s) == 84)
         return 84;
     clean_uuid = remove_quotes(s->input_tab[1]);
-    send_user_info(&s->users, &s->clients, client_fd, clean_uuid);
-    return 0;
+    if (s->save_struct->is_saving)
+        send_user_info(&s->users, &s->clients, client_fd, clean_uuid);
+    return 1;
 }

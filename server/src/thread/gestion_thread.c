@@ -48,7 +48,8 @@ thread_t *create_thread(server_t *s, int client_fd)
         new_thread->title = s->thread_title;
         new_thread->body = s->thread_body;
         new_thread->time = time(NULL);
-        send_thread_created(s, client_fd, new_thread->time);
+        if (s->save_struct->is_saving)
+            send_thread_created(s, client_fd, new_thread->time);
         new_thread->reply = NULL;
         new_thread->next = NULL;
     }
@@ -79,7 +80,8 @@ int define_new_thread(server_t *s, int client_fd, channel_t *current_channel)
         thread_head = &current_channel->thread;
         current_thread = *thread_head;
         set_new_thread(current_thread, new_thread, thread_head);
-        server_event_thread_created(s->uuid_channel, s->uuid_thread,
+        if (s->save_struct->is_saving)
+            server_event_thread_created(s->uuid_channel, s->uuid_thread,
             uuid_user, s->thread_title, s->thread_body);
         return 84;
     }
@@ -102,7 +104,8 @@ static int find_right_channel(server_t *s, int client_fd, team_t *current_team)
         current_channel = current_channel->next;
     }
     error = my_strcat(error, s->parse_context[2]);
-    send(client_fd, error, strlen(error), 0);
+    if (s->save_struct->is_saving)
+        send(client_fd, error, strlen(error), 0);
     return 84;
 }
 
@@ -119,7 +122,7 @@ static int find_right_team(server_t *s, int client_fd, team_t *current_team)
     return 0;
 }
 
-void add_thread(server_t *s, int client_fd)
+int add_thread(server_t *s, int client_fd)
 {
     team_t **team_head = &s->team;
     team_t *current_team = *team_head;
@@ -132,9 +135,11 @@ void add_thread(server_t *s, int client_fd)
     //NE PAS OUBLIER DE CHECK SI LE USER EST SUB A LA TEAM
     while (current_team != NULL) {
         if (find_right_team(s, client_fd, current_team) == 84)
-            return;
+            return 84;
         current_team = current_team->next;
     }
     error = my_strcat(error, s->parse_context[1]);
-    send(client_fd, error, strlen(error), 0);
+    if (s->save_struct->is_saving)
+        send(client_fd, error, strlen(error), 0);
+    return 0;
 }

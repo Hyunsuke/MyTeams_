@@ -40,6 +40,7 @@ int logout_cmd(server_t *s, int client_fd)
     s->is_Ctrl_c = false;
     if (error_logout(s, client_fd) == 84)
         return 84;
-    update_user_and_client_logout(s, &s->users, &s->clients, client_fd);
-    return 0;
+    if (s->save_struct->is_saving)
+        update_user_and_client_logout(s, &s->users, &s->clients, client_fd);
+    return 1;
 }

@@ -7,15 +7,16 @@
 
 #include "server.h"
 
-void update_log(server_t *s, int client_fd)
+int update_log(server_t *s, int client_fd)
 {
     if (update_client(s, client_fd) == 84) {
-        return;
+        return 84;
     }
     if (update_user_existing(s) == 84) {
-        return;
+        return 84;
     }
     update_user_not_exiting(s);
+    return 0;
 }
 
 int error_login(server_t *s)
@@ -41,6 +42,6 @@ int login_cmd(server_t *s, int client_fd)
     if (error_login(s) == 84)
         return 84;
     s->name_login = remove_quotes(s->input_tab[1]);
-    update_log(s, client_fd);
-    return 0;
+    s->isClientUpdated = true;
+    return update_log(s, client_fd);
 }

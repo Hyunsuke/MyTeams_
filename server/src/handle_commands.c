@@ -31,7 +31,36 @@ int process_command(server_t *s, int client_fd, const char *command)
     return 0;
 }
 
+void push_back_save(server_t *s, char *buffer, int client_fd)
+{
+    FILE *file = fopen("save.txt", "a");
+    user_t *current = find_user_by_fd(s->clients, s->users, client_fd);
+
+    if (file == NULL) {
+        printf("Erreur lors de l'ouverture du fichier save.txt\n");
+        return;
+    }
+    if (s->isClientUpdated == false) {
+        buffer = my_strcat(buffer, "#");
+        buffer = my_strcat(buffer, current->name);
+    }
+    if (buffer == NULL)
+        return;
+    fprintf(file, "%s\n", buffer);
+    fclose(file);
+}
+
 int handle_commands(server_t *s, int client_fd)
 {
-    return process_command(s, client_fd, s->input_tab[0]);
+    int save_return = 0;
+
+    s->isClientUpdated = false;
+    save_return = process_command(s, client_fd, s->input_tab[0]);
+    if (s->save_struct->is_saving) {
+        if (save_return == 0) {
+            push_back_save(s, s->save_struct->buffer, client_fd);
+            return save_return;
+        }
+    }
+    return save_return;
 }

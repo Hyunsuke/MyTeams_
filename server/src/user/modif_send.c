@@ -22,7 +22,8 @@ int find_user(server_t *s, int client_fd, char *uuid, user_t **dest_user)
 {
     *dest_user = find_user_by_uuid(s->users, uuid);
     if (*dest_user == NULL) {
-        send_bad_uuid(client_fd, uuid);
+        if (s->save_struct->is_saving)
+            send_bad_uuid(client_fd, uuid);
         return 84;
     }
     return 0;

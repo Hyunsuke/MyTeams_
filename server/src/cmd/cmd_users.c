@@ -61,6 +61,7 @@ int users_cmd(server_t *s, int client_fd)
 {
     if (error_users(s, client_fd) == 84)
         return 84;
-    send_user_list(&s->users, &s->clients, client_fd);
-    return 0;
+    if (s->save_struct->is_saving)
+        send_user_list(&s->users, &s->clients, client_fd);
+    return 1;
 }

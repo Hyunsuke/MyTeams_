@@ -38,17 +38,19 @@ void send_info_messages_to_client(int client_fd,
     usleep(1000);
 }
 
-void give_message_linked_list_to_client(contact_t *current, int client_fd)
+int give_message_list_to_cli(contact_t *current, int client_fd, server_t *s)
 {
     message_t *current_message = current->content;
 
     if (current == NULL)
-        return;
+        return 1;
     while (current_message != NULL) {
-        send_info_messages_to_client(client_fd,
-            current_message->body, current_message);
+        if (s->save_struct->is_saving)
+            send_info_messages_to_client(client_fd,
+                current_message->body, current_message);
         current_message = current_message->next;
     }
+    return 1;
 }
 
 int messages_cmd(server_t *s, int client_fd)
@@ -72,6 +74,5 @@ int messages_cmd(server_t *s, int client_fd)
             "No existing discussion with the selected uuid\n", 46);
         return 84;
     }
-    give_message_linked_list_to_client(current_contact, client_fd);
-    return 0;
+    return give_message_list_to_cli(current_contact, client_fd, s);
 }

@@ -106,7 +106,8 @@ static int find_right_thread(server_t *s, int client_fd,
         current_thread = current_thread->next;
     }
     error = my_strcat(error, s->parse_context[3]);
-    send(client_fd, error, strlen(error), 0);
+    if (s->save_struct->is_saving)
+        send(client_fd, error, strlen(error), 0);
     return 84;
 }
 
@@ -125,7 +126,8 @@ static int find_right_channel(server_t *s, int client_fd, team_t *current_team)
         current_channel = current_channel->next;
     }
     error = my_strcat(error, s->parse_context[2]);
-    send(client_fd, error, strlen(error), 0);
+    if (s->save_struct->is_saving)
+        send(client_fd, error, strlen(error), 0);
     return 84;
 }
 
@@ -142,7 +144,7 @@ static int find_right_team(server_t *s, int client_fd, team_t *current_team)
     return 0;
 }
 
-void add_reply(server_t *s, int client_fd)
+int add_reply(server_t *s, int client_fd)
 {
     team_t **team_head = &s->team;
     team_t *current_team = *team_head;
@@ -153,9 +155,11 @@ void add_reply(server_t *s, int client_fd)
     //NE PAS OUBLIER DE CHECK SI THREAD EXISTE DÉJÀ
     while (current_team != NULL) {
         if (find_right_team(s, client_fd, current_team) == 84)
-            return;
+            return 84;
         current_team = current_team->next;
     }
     error = my_strcat(error, s->parse_context[1]);
-    send(client_fd, error, strlen(error), 0);
+    if (s->save_struct->is_saving)
+        send(client_fd, error, strlen(error), 0);
+    return 0;
 }

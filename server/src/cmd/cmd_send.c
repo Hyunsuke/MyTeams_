@@ -36,7 +36,8 @@ int check_and_handle_client_connection(server_t *s, int client_fd)
     client_t *current_client = *client_head;
 
     if (check_connection_client(current_client, client_fd) == 84) {
-        send_unauthorized_to_client(client_fd);
+        if (s->save_struct->is_saving)
+            send_unauthorized_to_client(client_fd);
         usleep(1000);
         return 84;
     }
@@ -88,7 +89,8 @@ void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
     uuid_unparse(sender_user->uuid, sender_uuid_str);
     snd_contact(&contact, dest_user, sender_uuid_str);
     add_message(&contact->content, sender_uuid_str, msg, current_time);
-    send_private_message(sender_user, dest_uuid, msg, dest_client);
+    if (s->save_struct->is_saving)
+        send_private_message(sender_user, dest_uuid, msg, dest_client);
     dupli_cntact(&from_contact, sender_user, dest_uuid);
     add_message(&from_contact->content, sender_uuid_str, msg, current_time);
 }

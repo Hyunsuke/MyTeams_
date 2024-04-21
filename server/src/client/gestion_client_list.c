@@ -58,7 +58,8 @@ void remove_client(client_t **head, int fd, server_t *s)
     else
         prev->next = current->next;
     close(current->fd);
-    FD_CLR(current->fd, &s->client_fds);
+    if (s->save_struct->is_saving)
+        FD_CLR(current->fd, &s->client_fds);
 }
 
 void add_client(client_t **head, int fd)

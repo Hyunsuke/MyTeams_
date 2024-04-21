@@ -13,12 +13,12 @@ void config_server_socket(server_t *s)
 
     s->server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (s->server_fd < 0) {
-        perror("socket failed");
+        printf("socket failed\n");
         exit(EXIT_FAILURE);
     }
     if (setsockopt(s->server_fd, SOL_SOCKET, SO_REUSEADDR, &opt,
         sizeof(opt))) {
-        perror("setsockopt");
+        printf("setsockopt\n");
         exit(EXIT_FAILURE);
     }
     s->serv_adr.sin_family = AF_INET;
@@ -31,11 +31,11 @@ void config(server_t *s)
     config_server_socket(s);
     if (bind(s->server_fd, (struct sockaddr*)&s->serv_adr,
         sizeof(s->serv_adr)) < 0) {
-        perror("bind failed");
+        printf("bind failed\n");
         exit(EXIT_FAILURE);
     }
     if (listen(s->server_fd, 3) < 0) {
-        perror("listen");
+        printf("listen\n");
         exit(EXIT_FAILURE);
     }
 }

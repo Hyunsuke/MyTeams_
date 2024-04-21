@@ -92,6 +92,9 @@ typedef struct client {
 
 typedef struct save {
     char *uuid;
+    bool is_saving;
+    char *buffer;
+    bool is_uuid_there;
 } save_t;
 
 typedef struct server_s {
@@ -122,7 +125,8 @@ typedef struct server_s {
     char *channel_description;
     char *save_name;
     uuid_t save_uuid;
-    save_t *save;
+    save_t *save_struct;
+    bool isClientUpdated;
 } server_t;
 
 void printhelp(void);
@@ -145,7 +149,7 @@ int update_user_existing(server_t *s);
 int update_client(server_t *s, int client_fd);
 
 //gestion_user_list.c
-void add_user(user_t **head, char *name);
+void add_user(server_t *s, user_t **head, char *name);
 user_t *find_user_by_uuid(user_t *head, const char *uuid);
 user_t *find_user_by_name(user_t *head, const char *name);
 user_t *find_user_by_fd(client_t *head_client,
@@ -250,17 +254,17 @@ int use_cmd(server_t *s, int client_fd);
 char *my_strcat(const char *str1, const char *str2);
 
 //gestion_team.c
-void add_team(server_t *s, int client_fd);
+int add_team(server_t *s, int client_fd);
 char *get_user_uuid(server_t *s, int client_fd);
 
 //gestion_thread.C
-void add_thread(server_t *s, int client_fd);
+int add_thread(server_t *s, int client_fd);
 
 //getsion_channel.c
-void add_channel(server_t *s, int client_fd);
+int add_channel(server_t *s, int client_fd);
 
 //gestion_reply.c
-void add_reply(server_t *s, int client_fd);
+int add_reply(server_t *s, int client_fd);
 
 //cmd_subscribe.c
 int subscribe_cmd(server_t *s, int client_fd);
