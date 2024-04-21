@@ -22,6 +22,13 @@ SRC	=	src/main.c 				\
 		src/cmd/status.c \
 		src/cmd/message.c \
 		src/cmd/time.c 		\
+		src/cmd/set_thread.c \
+		src/cmd/set_reply_user.c \
+		src/cmd/set_channel.c \
+		src/cmd/set_team.c \
+		src/cmd/print_list.c \
+		src/cmd/print_team_sub_channel.c \
+		src/cmd/print_thread_reply.c \
 
 OBJ	=	$(SRC:.c=.o)
 

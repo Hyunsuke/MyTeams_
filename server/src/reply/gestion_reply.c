@@ -7,42 +7,59 @@
 
 #include "server.h"
 
+void use_fct_send(client_t *current_client, server_t *s,
+    user_t *user_subscribe, time_t time_reply)
+{
+    char *timestamp_str = time_t_to_string(time_reply);
+    char *uuid = get_user_uuid(s, s->cli_fd);
+
+    if (strcmp(user_subscribe->name, current_client->name) == 0) {
+        send(current_client->fd, my_strcat("THREAD_UUID ", s->uuid_thread),
+            strlen(s->uuid_thread) + 13, 0);
+        usleep(10000);
+        send(current_client->fd, my_strcat("USER_UUID ", uuid),
+            strlen(uuid) + 11, 0);
+        usleep(10000);
+        send(current_client->fd,
+            my_strcat("REPLY_TIMESTAMP ", timestamp_str),
+                strlen(timestamp_str) + 17, 0);
+        usleep(10000);
+        send(current_client->fd, my_strcat("REPLY_BODY ", s->reply_body),
+            strlen(s->reply_body) + 12, 0);
+        usleep(10000);
+        send(current_client->fd, "PRINT_REPLY_RECEIVED", 21, 0);
+        usleep(10000);
+    }
+}
+
+void send_reply_to_subscribe(client_t *current_client, server_t *s,
+    user_t *user_subscribe, time_t time_reply)
+{
+    if (current_client->name != NULL) {
+        use_fct_send(current_client, s, user_subscribe, time_reply);
+    }
+}
+
 void send_reply_created(server_t *s, int client_fd, time_t time_reply,
     team_t *current_team)
 {
     user_t **user_subscribe_head = &current_team->user;
     user_t *user_subscribe = *user_subscribe_head;
-    char *timestamp_str = time_t_to_string(time_reply);
-    char *uuid;
     client_t **client_head;
     client_t *current_client;
 
-    uuid = get_user_uuid(s, client_fd);
     while (user_subscribe != NULL) {
         client_head = &s->clients;
         current_client = *client_head;
         while (current_client != NULL) {
-            if (current_client->name != NULL) {
-                if (strcmp(user_subscribe->name, current_client->name) == 0) {
-                    send(current_client->fd, my_strcat("THREAD_UUID ", s->uuid_thread), strlen(s->uuid_thread) + 13, 0);
-                    usleep(10000);
-                    send(current_client->fd, my_strcat("USER_UUID ", uuid), strlen(uuid) + 11, 0);
-                    usleep(10000);
-                    send(current_client->fd, my_strcat("REPLY_TIMESTAMP ", timestamp_str), strlen(timestamp_str) + 17, 0);
-                    usleep(10000);
-                    send(current_client->fd, my_strcat("REPLY_BODY ", s->reply_body), strlen(s->reply_body) + 12, 0);
-                    usleep(10000);
-                    send(current_client->fd, "PRINT_REPLY_RECEIVED", 21, 0);
-                    usleep(10000);
-                }
-            }
+            send_reply_to_subscribe(current_client, s, user_subscribe,
+                time_reply);
             current_client = current_client->next;
         }
         user_subscribe = user_subscribe->next;
     }
     send(client_fd, "PRINT_REPLY_CREATED", 20, 0);
     usleep(10000);
-
 }
 
 reply_t *create_reply(server_t *s, int client_fd, team_t *current_team)
@@ -58,7 +75,7 @@ reply_t *create_reply(server_t *s, int client_fd, team_t *current_team)
     return new_reply;
 }
 
-void set_new_reply(reply_t *current_reply, reply_t *new_reply,
+static void set_new_reply(reply_t *current_reply, reply_t *new_reply,
     reply_t **reply_head)
 {
     if (current_reply == NULL) {
@@ -71,8 +88,8 @@ void set_new_reply(reply_t *current_reply, reply_t *new_reply,
     }
 }
 
-int define_new_reply(server_t *s, int client_fd, thread_t *current_thread,
-    team_t *current_team)
+static int define_new_reply(server_t *s, int client_fd,
+    thread_t *current_thread, team_t *current_team)
 {
     reply_t **reply_head;
     reply_t *current_reply;
@@ -104,7 +121,8 @@ static int find_right_thread(server_t *s, int client_fd,
     current_thread = *thread_head;
     while (current_thread != NULL) {
         uuid_unparse(current_thread->uuid, s->uuid_thread);
-        if (define_new_reply(s, client_fd, current_thread, current_team) == 84) {
+        if (define_new_reply(s, client_fd, current_thread,
+            current_team) == 84) {
             return 84;
         }
         current_thread = current_thread->next;
@@ -125,7 +143,8 @@ static int find_right_channel(server_t *s, int client_fd, team_t *current_team)
     current_channel = *channel_head;
     while (current_channel != NULL) {
         uuid_unparse(current_channel->uuid, s->uuid_channel);
-        if (find_right_thread(s, client_fd, current_channel, current_team) == 84)
+        if (find_right_thread(s, client_fd, current_channel,
+            current_team) == 84)
             return 84;
         current_channel = current_channel->next;
     }
@@ -154,6 +173,7 @@ int add_reply(server_t *s, int client_fd)
     team_t *current_team = *team_head;
     char *error = "UNKNOWN_TEAM ";
 
+    s->cli_fd = client_fd;
     s->reply_body = remove_quotes(s->input_tab[1]);
     s->parse_context = define_context(s, client_fd);
     while (current_team != NULL) {

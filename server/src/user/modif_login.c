@@ -20,6 +20,13 @@ void send_from_user_existence(user_t *current_user,
     }
 }
 
+void send_if_save(server_t *s, user_t *current_user,
+    client_t *new_current_client, char uuid[37])
+{
+    if (s->save_struct->is_saving)
+        send_from_user_existence(current_user, new_current_client, uuid);
+}
+
 int check_user_existence(server_t *s, user_t *current_user,
     client_t *new_current_client)
 {
@@ -29,11 +36,10 @@ int check_user_existence(server_t *s, user_t *current_user,
         current_user->log += 1;
         uuid_unparse(current_user->uuid, uuid);
         while (new_current_client != NULL) {
-            if (s->save_struct->is_uuid_there)
-            send_from_user_existence(current_user, new_current_client, uuid);
+            send_if_save(s, current_user, new_current_client, uuid);
             new_current_client = new_current_client->next;
         }
-        if (s->save_struct->is_uuid_there)
+        if (s->save_struct->is_saving)
             server_event_user_logged_in(uuid);
         return 84;
     }
@@ -69,7 +75,14 @@ static void send_from_check_pos(user_t *new_current_user,
     }
 }
 
-int check_position_user(server_t *s, client_t *new_current_client,
+static void send_log_if_save(server_t *s, client_t *new_current_client,
+    user_t *new_current_user, char uuid[37])
+{
+    if (s->save_struct->is_saving)
+        send_from_check_pos(new_current_user, new_current_client, uuid, s);
+}
+
+static int check_position_user(server_t *s, client_t *new_current_client,
     user_t *new_current_user)
 {
     char uuid[37];
@@ -77,8 +90,7 @@ int check_position_user(server_t *s, client_t *new_current_client,
     if (strcmp(new_current_user->name, s->name_login) == 0) {
         uuid_unparse(new_current_user->uuid, uuid);
         while (new_current_client != NULL) {
-            if (s->save_struct->is_saving)
-            send_from_check_pos(new_current_user, new_current_client, uuid, s);
+            send_log_if_save(s, new_current_client, new_current_user, uuid);
             new_current_client = new_current_client->next;
         }
         if (s->save_struct->is_saving) {

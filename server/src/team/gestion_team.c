@@ -7,20 +7,31 @@
 
 #include "server.h"
 
-void send_team_created(server_t *s, int client_fd, char *name, char *desc)
+static void use_fct_team(server_t *s, client_t *current_client, char *name,
+    char *desc)
+{
+    send(current_client->fd, my_strcat("TEAM_UUID ", s->uuid_team),
+        strlen(s->uuid_team) + 11, 0);
+    usleep(10000);
+    send(current_client->fd, my_strcat("TEAM_NAME ", name),
+        strlen(name) + 11, 0);
+    usleep(10000);
+    send(current_client->fd, my_strcat("TEAM_DESCRIPTION ", desc),
+        strlen(desc) +18, 0);
+    usleep(10000);
+    send(current_client->fd, "PRINT_TEAM_EVENT_CREATED", 25, 0);
+    usleep(10000);
+}
+
+static void send_team_created(server_t *s, int client_fd, char *name,
+    char *desc)
 {
     client_t **head = &s->clients;
     client_t *current_client = *head;
+
     while (current_client != NULL) {
         if (current_client->name != NULL) {
-            send(current_client->fd, my_strcat("TEAM_UUID ", s->uuid_team), strlen(s->uuid_team) + 11, 0);
-            usleep(10000);
-            send(current_client->fd, my_strcat("TEAM_NAME ", name), strlen(name) + 11, 0);
-            usleep(10000);
-            send(current_client->fd, my_strcat("TEAM_DESCRIPTION ", desc), strlen(desc) +18, 0);
-            usleep(10000);
-            send(current_client->fd, "PRINT_TEAM_EVENT_CREATED", 25, 0);
-            usleep(10000);
+            use_fct_team(s, current_client, name, desc);
         }
         current_client = current_client->next;
     }

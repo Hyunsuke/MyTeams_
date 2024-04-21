@@ -50,7 +50,7 @@ static int get_fd_from_array(server_t *s, char *buffer, int client_fd)
         if (current == NULL)
             return 84;
         s->save_struct->buffer = buffer;
-        return get_info_from_file(s, array[0], current->fd );
+        return get_info_from_file(s, array[0], current->fd);
     }
     return get_info_from_file(s, array[0], client_fd);
 }
@@ -134,10 +134,10 @@ void run_serv(server_t *s)
     init_list(s);
     config(s);
     s->save_struct->buffer = NULL;
-    // if (load_file(s) == 84) {
-    //     my_free_all();
-    //     exit(84);
-    // }
+    if (load_file(s) == 84) {
+        my_free_all();
+        exit(84);
+    }
     s->save_struct->is_saving = true;
     handle_incoming_connection(s);
 }

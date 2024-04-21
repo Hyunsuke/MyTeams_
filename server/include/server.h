@@ -279,6 +279,10 @@ int list_cmd(server_t *s, int client_fd);
 
 int check_subscribe(team_t *current_team, server_t *s, int client_fd);
 
+//add_elem_subscribe.c
+void add_user_elem(team_t *current_team, server_t *s, int client_fd);
+void send_subscribe_to_subscribed(team_t *current_team, server_t *s);
+
 // modif_list.c
 void send_list_teams_info(int client_fd, team_t *current_team, server_t *s);
 void send_list_channels_info(int client_fd,
