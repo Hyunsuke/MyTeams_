@@ -12,7 +12,7 @@ int create_socket(void)
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sockfd == -1) {
-        perror("Erreur lors de la création du socket");
+        printf("Erreur lors de la création du socket\n");
         return -1;
     }
     return sockfd;
@@ -28,7 +28,7 @@ int client_loop(client_t *c, int sockfd)
     FD_SET(STDIN_FILENO, &readfds);
     ret = select(sockfd + 1, &readfds, NULL, NULL, NULL);
     if (ret == -1) {
-        perror("Erreur lors de l'appel à select");
+        printf("Erreur lors de l'appel à select\n");
         return 1;
     }
     if (FD_ISSET(STDIN_FILENO, &readfds))
