@@ -63,7 +63,7 @@ void set_reply_body(client_t *client, char **commands)
 void set_reply_timestamp(client_t *client, char **commands)
 {
     (void)client;
-    client->reply_timestamp = get_time_from_string(commands[1]);;
+    client->reply_timestamp = get_time_from_string(commands[1]);
 }
 
 // Print
@@ -86,28 +86,42 @@ void print_thread_created(client_t *client, char **commands)
 {
     (void)commands;
     client_print_thread_created(client->thread_uuid, client->user_uuid,
-    client->thread_timestamp, client->thread_title, client->thread_body);
+        client->thread_timestamp, client->thread_title, client->thread_body);
+}
+
+void print_thread_event_created(client_t *client, char **commands)
+{
+    (void)commands;
+    client_event_thread_created(client->thread_uuid, client->user_uuid,
+        client->thread_timestamp, client->thread_title, client->thread_body);
 }
 
 void print_channel_created(client_t *client, char **commands)
 {
     (void)commands;
     client_print_channel_created(client->channel_uuid, client->channel_name,
-    client->channel_description);
+        client->channel_description);
+}
+
+void print_channel_event_created(client_t *client, char **commands)
+{
+    (void)commands;
+    client_event_channel_created(client->channel_uuid, client->channel_name,
+        client->channel_description);
 }
 
 void print_team_created(client_t *client, char **commands)
 {
     (void)commands;
     client_print_team_created(client->team_uuid, client->team_name,
-    client->team_description);
+        client->team_description);
 }
 
 void print_team_event_created(client_t *client, char **commands)
 {
     (void)commands;
     client_event_team_created(client->team_uuid, client->team_name,
-    client->team_description);
+        client->team_description);
 }
 
 // Team
@@ -224,7 +238,9 @@ command_handler_t commandHandlers[] = {
     {"PRINT_REPLY_RECEIVED", print_reply_received},
     {"PRINT_REPLY_CREATED", print_reply_created},
     {"PRINT_THREAD_CREATED", print_thread_created},
+    {"PRINT_THREAD_EVENT_CREATED", print_thread_event_created},
     {"PRINT_CHANNEL_CREATED", print_channel_created},
+    {"PRINT_CHANNEL_EVENT_CREATED", print_channel_event_created},
     {"PRINT_TEAM_CREATED", print_team_created},
     {"PRINT_TEAM_EVENT_CREATED", print_team_event_created},
     {"PRINT_CLIENT_EXIST", print_client_already_exist},

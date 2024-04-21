@@ -7,14 +7,33 @@
 
 #include "server.h"
 
-void send_channel_created(server_t *s, int client_fd)
+void send_channel_created(team_t *current_team, server_t *s, int client_fd)
 {
-    send(client_fd, my_strcat("CHANNEL_UUID ", s->uuid_channel), strlen(s->uuid_channel) + 14, 0);
-    usleep(10000);
-    send(client_fd, my_strcat("CHANNEL_NAME ", s->channel_name), strlen(s->channel_name) + 14, 0);
-    usleep(10000);
-    send(client_fd, my_strcat("CHANNEL_DESCRIPTION ", s->channel_description), strlen(s->channel_description) + 21, 0);
-    usleep(10000);
+    user_t **user_subscribe_head = &current_team->user;
+    user_t *user_subscribe = *user_subscribe_head;
+    client_t **client_head;
+    client_t *current_client;
+
+    while (user_subscribe != NULL) {
+        client_head = &s->clients;
+        current_client = *client_head;
+        while (current_client != NULL) {
+            if (current_client->name != NULL) {
+                if (strcmp(user_subscribe->name, current_client->name) == 0) {
+                    send(current_client->fd, my_strcat("CHANNEL_UUID ", s->uuid_channel), strlen(s->uuid_channel) + 14, 0);
+                    usleep(10000);
+                    send(current_client->fd, my_strcat("CHANNEL_NAME ", s->channel_name), strlen(s->channel_name) + 14, 0);
+                    usleep(10000);
+                    send(current_client->fd, my_strcat("CHANNEL_DESCRIPTION ", s->channel_description), strlen(s->channel_description) + 21, 0);
+                    usleep(10000);
+                    send(current_client->fd, "PRINT_CHANNEL_EVENT_CREATED", 28, 0);
+                    usleep(10000);
+                }
+            }
+            current_client = current_client->next;
+        }
+        user_subscribe = user_subscribe->next;
+    }
     send(client_fd, "PRINT_CHANNEL_CREATED", 22, 0);
     usleep(10000);
 }
@@ -37,20 +56,20 @@ channel_t *create_channel(server_t *s, int client_fd)
     return new_channel;
 }
 
-void add_channel_to_team_list(server_t *s, channel_t **channel_head, channel_t *new_channel)
+void add_channel_to_team_list(server_t *s, team_t *current_team, channel_t **channel_head, channel_t *new_channel)
 {
     channel_t *current_channel;
 
     if (*channel_head == NULL) {
         *channel_head = new_channel;
-        send_channel_created(s, s->cli_fd);
+        send_channel_created(current_team, s, s->cli_fd);
     } else {
         current_channel = *channel_head;
         while (current_channel->next != NULL) {
             current_channel = current_channel->next;
         }
         current_channel->next = new_channel;
-        send_channel_created(s, s->cli_fd);
+        send_channel_created(current_team, s, s->cli_fd);
     }
 }
 
@@ -66,7 +85,7 @@ int add_channel_to_team(server_t *s, channel_t *new_channel,
             if (check_subscribe(current_team, s, s->cli_fd) == 84) {
                 return 24;
             }
-            add_channel_to_team_list(s, &current_team->channel, new_channel);
+            add_channel_to_team_list(s, current_team, &current_team->channel, new_channel);
             server_event_channel_created(s->uuid_team, s->uuid_channel, s->channel_name);
             return 0;
         }
