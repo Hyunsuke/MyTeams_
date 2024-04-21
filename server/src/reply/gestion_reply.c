@@ -72,12 +72,13 @@ int define_new_reply(server_t *s, int client_fd, thread_t *current_thread)
 {
     reply_t **reply_head;
     reply_t *current_reply;
-    reply_t *new_reply = create_reply(s, client_fd);
+    reply_t *new_reply;
     char *uuid_user = get_user_uuid(s, client_fd);
 
     if (strcmp(s->uuid_thread, s->parse_context[3]) == 0) {
         reply_head = &current_thread->reply;
         current_reply = *reply_head;
+        new_reply = create_reply(s, client_fd);
         set_new_reply(current_reply, new_reply, reply_head);
         server_event_reply_created(s->uuid_thread, uuid_user,
             s->reply_body);

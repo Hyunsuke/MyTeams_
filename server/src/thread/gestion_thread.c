@@ -74,11 +74,12 @@ int define_new_thread(server_t *s, int client_fd, channel_t *current_channel)
     thread_t **thread_head;
     thread_t *current_thread;
     char *uuid_user = get_user_uuid(s, client_fd);
-    thread_t *new_thread = create_thread(s, client_fd);
+    thread_t *new_thread;
 
     if (strcmp(s->uuid_channel, s->parse_context[2]) == 0) {
         thread_head = &current_channel->thread;
         current_thread = *thread_head;
+        new_thread = create_thread(s, client_fd);
         set_new_thread(current_thread, new_thread, thread_head);
         if (s->save_struct->is_saving)
             server_event_thread_created(s->uuid_channel, s->uuid_thread,
@@ -114,7 +115,7 @@ static int find_right_team(server_t *s, int client_fd, team_t *current_team)
     uuid_unparse(current_team->uuid, s->uuid_team);
     if (strcmp(s->uuid_team, s->parse_context[1]) == 0) {
         if (check_subscribe(current_team, s, client_fd) == 84)
-        return 84;
+            return 84;
         if (find_right_channel(s, client_fd, current_team) == 84) {
             return 84;
         }
