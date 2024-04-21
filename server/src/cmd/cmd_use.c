@@ -49,12 +49,11 @@ int check_use_error(client_t *current, int client_fd, int args, server_t *s)
         return 84;
     }
     if (check_connection_client(current, client_fd) == 84) {
-        write(client_fd, "User not logged in\n", 19);
         return 84;
     }
     args = get_args_number(s->input_tab);
     if (args < 1 || args > 4) {
-        write(client_fd, "Wrong number of arguments\n", 26);
+        dprintf(client_fd, "403 bad arguments for /use command\n");
         usleep(100);
         return 84;
     }
@@ -80,5 +79,6 @@ int use_cmd(server_t *s, int client_fd)
     }
     current_user = find_user_by_name(s->users, current_client->name);
     current_user->context = set_context(args, current_user, s->input_tab);
+    dprintf(client_fd, "404 context set successfully\n");
     return 0;
 }

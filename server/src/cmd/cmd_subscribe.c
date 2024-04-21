@@ -87,7 +87,6 @@ static int check_log_exist(server_t *s, int client_fd,
     if (check_connection_client(current_client, client_fd) == 84) {
         if (s->save_struct->is_saving) {
             send_unauthorized_to_client(client_fd);
-            dprintf(client_fd, "322 you are not subscribed to this team\n");
         }
         usleep(1000);
         return 84;

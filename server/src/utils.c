@@ -20,6 +20,7 @@ int check_connection_client(client_t *current_client, int client_fd)
 {
     while (current_client != NULL) {
         if (connection_client(current_client, client_fd) == 84) {
+            dprintf(client_fd, "530 user not logged in\n");
             return 84;
         }
         current_client = current_client->next;
