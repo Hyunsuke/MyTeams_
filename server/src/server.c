@@ -59,9 +59,12 @@ static void set_logout(server_t *s)
 {
     user_t **user_head = &s->users;
     user_t *current_user = *user_head;
+    char uuid[37];
 
     while (current_user != NULL) {
         current_user->log -= 1;
+        uuid_unparse(current_user->uuid, uuid);
+        current_user->context = my_strdup(uuid);
         current_user = current_user->next;
     }
 }
@@ -136,6 +139,10 @@ void run_serv(server_t *s)
     init_list(s);
     config(s);
     s->save_struct->buffer = NULL;
+    if (load_file(s) == 84) {
+        my_free_all();
+        exit(84);
+    }
     s->save_struct->is_saving = true;
     handle_incoming_connection(s);
 }
