@@ -14,6 +14,8 @@ void send_channel_created(team_t *current_team, server_t *s, int client_fd)
     client_t **client_head;
     client_t *current_client;
 
+    if (!s->save_struct->is_saving)
+        return;
     while (user_subscribe != NULL) {
         client_head = &s->clients;
         current_client = *client_head;
@@ -46,8 +48,13 @@ channel_t *create_channel(server_t *s, int client_fd)
     s->channel_description = remove_quotes(s->input_tab[2]);
     (void)client_fd;
     if (new_channel != NULL) {
-        uuid_generate(new_channel->uuid);
-        uuid_unparse(new_channel->uuid, s->uuid_channel);
+        if (s->save_struct->is_saving) {
+            uuid_generate(new_channel->uuid);
+            uuid_unparse(new_channel->uuid, s->uuid_channel);
+        } else {
+            strcpy(s->uuid_channel, s->save_struct->uuid);
+            uuid_parse(s->save_struct->uuid, new_channel->uuid);
+        }
         new_channel->name = s->channel_name;
         new_channel->description = s->channel_description;
         new_channel->thread = NULL;
@@ -62,14 +69,16 @@ void add_channel_to_team_list(server_t *s, team_t *current_team, channel_t **cha
 
     if (*channel_head == NULL) {
         *channel_head = new_channel;
-        send_channel_created(current_team, s, s->cli_fd);
+        if (s->save_struct->is_saving)
+            send_channel_created(current_team, s, s->cli_fd);
     } else {
         current_channel = *channel_head;
         while (current_channel->next != NULL) {
             current_channel = current_channel->next;
         }
         current_channel->next = new_channel;
-        send_channel_created(current_team, s, s->cli_fd);
+        if (s->save_struct->is_saving)
+            send_channel_created(current_team, s, s->cli_fd);
     }
 }
 
@@ -86,7 +95,8 @@ int add_channel_to_team(server_t *s, channel_t *new_channel,
                 return 24;
             }
             add_channel_to_team_list(s, current_team, &current_team->channel, new_channel);
-            server_event_channel_created(s->uuid_team, s->uuid_channel, s->channel_name);
+            if (s->save_struct->is_saving)
+                server_event_channel_created(s->uuid_team, s->uuid_channel, s->channel_name);
             return 0;
         }
         current_team = current_team->next;

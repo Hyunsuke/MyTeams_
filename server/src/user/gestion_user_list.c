@@ -15,7 +15,7 @@ user_t *create_user(server_t *s, char *name)
     if (new_user != NULL) {
         if (s->save_struct->is_uuid_there && !s->save_struct->is_saving) {
             uuid_parse(s->save_struct->uuid, new_user->uuid);
-            strcpy(s->save_struct->uuid, uuid_str);
+            strcpy(uuid_str, s->save_struct->uuid);
         } else {
             uuid_generate(new_user->uuid);
             uuid_unparse(new_user->uuid, uuid_str);

@@ -134,10 +134,10 @@ void run_serv(server_t *s)
     init_list(s);
     config(s);
     s->save_struct->buffer = NULL;
-    // if (load_file(s) == 84) {
-    //     my_free_all();
-    //     exit(84);
-    // }
+    if (load_file(s) == 84) {
+        my_free_all();
+        exit(84);
+    }
     s->save_struct->is_saving = true;
     handle_incoming_connection(s);
 }

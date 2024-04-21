@@ -150,6 +150,7 @@ int list_cmd(server_t *s, int client_fd)
         return 84;
     context_tokens = my_str_to_word_array(sender_user->context, '/');
     type = get_type_of_create(s, client_fd);
-    find_context(s, client_fd, type, context_tokens);
-    return 0;
+    if (s->save_struct->is_saving)
+        find_context(s, client_fd, type, context_tokens);
+    return 1;
 }

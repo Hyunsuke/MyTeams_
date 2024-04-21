@@ -17,6 +17,8 @@ void send_reply_created(server_t *s, int client_fd, time_t time_reply,
     client_t **client_head;
     client_t *current_client;
 
+    if (!s->save_struct->is_saving)
+        return;
     uuid = get_user_uuid(s, client_fd);
     while (user_subscribe != NULL) {
         client_head = &s->clients;
@@ -52,7 +54,8 @@ reply_t *create_reply(server_t *s, int client_fd, team_t *current_team)
     if (new_reply != NULL) {
         new_reply->body = s->reply_body;
         new_reply->time = time(NULL);
-        send_reply_created(s, client_fd, new_reply->time, current_team);
+        if (s->save_struct->is_saving)
+            send_reply_created(s, client_fd, new_reply->time, current_team);
         new_reply->next = NULL;
     }
     return new_reply;

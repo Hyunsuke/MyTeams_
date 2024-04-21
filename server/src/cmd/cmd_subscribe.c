@@ -153,6 +153,8 @@ int team_dont_exist(server_t *s)
 
     while (current_team != NULL) {
         uuid_unparse(current_team->uuid, uuid);
+        printf("%s\n", uuid);
+        printf("%s\n", s->id_team);
         // printf("%s\n%s\n", uuid, s->id_team); // Debug pour save
         if (strcmp(uuid, s->id_team) == 0) {
             return 0;

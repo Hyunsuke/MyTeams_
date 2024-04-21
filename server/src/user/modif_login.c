@@ -29,11 +29,11 @@ int check_user_existence(server_t *s, user_t *current_user,
         current_user->log += 1;
         uuid_unparse(current_user->uuid, uuid);
         while (new_current_client != NULL) {
-            if (s->save_struct->is_uuid_there)
+            if (s->save_struct->is_saving)
             send_from_user_existence(current_user, new_current_client, uuid);
             new_current_client = new_current_client->next;
         }
-        if (s->save_struct->is_uuid_there)
+        if (s->save_struct->is_saving)
             server_event_user_logged_in(uuid);
         return 84;
     }
