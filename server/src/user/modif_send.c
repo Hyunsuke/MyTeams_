@@ -22,8 +22,11 @@ int find_user(server_t *s, int client_fd, char *uuid, user_t **dest_user)
 {
     *dest_user = find_user_by_uuid(s->users, uuid);
     if (*dest_user == NULL) {
-        if (s->save_struct->is_saving)
+        if (s->save_struct->is_saving) {
+            write(client_fd, "226 user not found for this message\n",
+            strlen("226 user not found for this message\n"));
             send_bad_uuid(client_fd, uuid);
+        }
         return 84;
     }
     return 0;

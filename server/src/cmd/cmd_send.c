@@ -13,8 +13,8 @@ int handle_send_inputs(server_t *s, int client_fd)
 
     for (; s->input_tab[nb_args] != NULL; nb_args++);
     if (nb_args != 3) {
-        write(client_fd, "Wrong number of arguments for /send command\n",
-            strlen("Wrong number of arguments for /send command\n"));
+        write(client_fd, "224 bad arguments for /send command\n",
+            strlen("224 bad arguments for /send command\n"));
         return 84;
     }
     if (check_quotes(s->input_tab[1]) == false) {
@@ -72,7 +72,7 @@ static void dupli_cntact(contact_t **cntact, user_t *send, char *uuid)
     }
 }
 
-void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
+int execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
 {
     user_t *sender_user = s->users;
     user_t *dest_user = s->users;
@@ -85,7 +85,7 @@ void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
     if (find_sender(s, client_fd, &sender_user) == 84 ||
         find_user(s, client_fd, dest_uuid, &dest_user) == 84 ||
         find_client(s, client_fd, dest_user, &dest_client) == 84)
-        return;
+        return 84;
     uuid_unparse(sender_user->uuid, sender_uuid_str);
     snd_contact(&contact, dest_user, sender_uuid_str);
     add_message(&contact->content, sender_uuid_str, msg, current_time);
@@ -93,6 +93,7 @@ void execute_send_cmd(server_t *s, int client_fd, char *dest_uuid, char *msg)
         send_private_message(sender_user, dest_uuid, msg, dest_client);
     dupli_cntact(&from_contact, sender_user, dest_uuid);
     add_message(&from_contact->content, sender_uuid_str, msg, current_time);
+    return 0;
 }
 
 int send_cmd(server_t *s, int client_fd)
@@ -106,7 +107,10 @@ int send_cmd(server_t *s, int client_fd)
         return 84;
     uuid = remove_quotes(s->input_tab[1]);
     message = remove_quotes(s->input_tab[2]);
-    execute_send_cmd(s, client_fd, uuid, message);
+    if (execute_send_cmd(s, client_fd, uuid, message) == 84)
+        return 0;
+    write(client_fd, "202 message sent successfully\n",
+        strlen("202 message sent successfully\n"));
     return 0;
 }
 

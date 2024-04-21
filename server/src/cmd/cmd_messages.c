@@ -15,8 +15,8 @@ int handle_messages_intputs(server_t *s, int client_fd)
         return 84;
     for (; s->input_tab[nb_args] != NULL; nb_args++);
     if (nb_args != 2) {
-        write(client_fd, "Wrong number of arguments for /messages command\n",
-            strlen("Wrong number of arguments for /messages command\n"));
+        write(client_fd, "242 bad argument for /messages command\n",
+            strlen("242 bad argument for /messages command\n"));
         return 84;
     }
     if (check_quotes(s->input_tab[1]) == false) {
@@ -64,16 +64,18 @@ int process_messages_cmd(server_t *s, int client_fd)
     dest_uuid = remove_quotes(s->input_tab[1]);
     if (find_sender(s, client_fd, &sender_user) == 84)
         return 84;
-    if (sender_user == NULL) {
-        write(client_fd, "User not found\n", strlen("User not found\n"));
+    if (sender_user == NULL)
         return 84;
-    }
     current_contact = find_contact_by_uuid(sender_user->contact, dest_uuid);
     if (current_contact == NULL) {
         write(client_fd,
-            "No existing discussion with the selected uuid\n", 46);
+            "244 no message exchange found with this user\n",
+            strlen("244 no message exchange found with this user\n"));
         return 84;
     }
+    write(client_fd,
+            "240 list of messages retrieved successfully\n",
+            strlen("240 list of messages retrieved successfully\n"));
     return give_message_list_to_cli(current_contact, client_fd, s);
 }
 
