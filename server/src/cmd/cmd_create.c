@@ -81,7 +81,7 @@ int error_create(server_t *s, char *type, int client_fd)
 
     for (; s->input_tab[nb_args] != NULL; nb_args++);
     if (check_args_quotes_for_ttc(s, type, client_fd, nb_args) == 84)
-        return 0;
+        return 84;
     if (strcmp(type, "reply") == 0) {
         if (nb_args != 2) {
             write(client_fd, "Invalid number of args.\n", 24);
