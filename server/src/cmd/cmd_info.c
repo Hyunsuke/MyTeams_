@@ -76,7 +76,8 @@ static int get_team_info(server_t *s,
         }
         current_team = current_team->next;
     }
-    write(client_fd, "Team not found\n", strlen("Team not found\n"));
+    dprintf(client_fd,
+        "346 can't list subscribed users, team does not exist\n");
     return 84;
 }
 

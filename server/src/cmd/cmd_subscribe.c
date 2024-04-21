@@ -85,15 +85,19 @@ static int check_log_exist(server_t *s, int client_fd,
     char *error = "UNKNOWN_TEAM ";
 
     if (check_connection_client(current_client, client_fd) == 84) {
-        if (s->save_struct->is_saving)
+        if (s->save_struct->is_saving) {
             send_unauthorized_to_client(client_fd);
+            dprintf(client_fd, "322 you are not subscribed to this team\n");
+        }
         usleep(1000);
         return 84;
     }
     if (team_dont_exist(s) == 84) {
         error = my_strcat(error, s->id_team);
-        if (s->save_struct->is_saving)
+        if (s->save_struct->is_saving) {
             send(client_fd, error, strlen(error), 0);
+            dprintf(client_fd, "303 can't subscribe, team not found\n");
+        }
         usleep(1000);
         return 84;
     }
@@ -111,5 +115,6 @@ int subscribe_cmd(server_t *s, int client_fd)
     if (check_log_exist(s, client_fd, current_client) == 84)
         return 84;
     set_subscribe_user(s, client_fd);
+    dprintf(client_fd, "302 subscribed successfully\n");
     return 0;
 }
