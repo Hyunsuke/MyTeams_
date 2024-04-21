@@ -99,8 +99,10 @@ static char **get_array_from_file(FILE *file)
 
     while (getline(&line, &buf_size, file) != -1) {
         str = my_strcat(str, line);
+        free(line);
         line = NULL;
     }
+    free(line);
     array = my_str_to_word_array(str, '\n');
     return array;
 }
